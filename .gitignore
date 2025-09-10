@@ -1,0 +1,14 @@
+# Variables de entorno
+.env
+
+# Entorno virtual
+venv
+
+# Archivos de log
+*.log
+
+# Cache
+**/__pycache__
+
+# Enrutador Entrenado
+**/intent_router.joblib
