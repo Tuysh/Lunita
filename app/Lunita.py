@@ -17,13 +17,8 @@ class Lunita(Guardian.Guardian):
         emocion: Motor de análisis emocional.
     """
 
-    def __init__(self, apikey: str) -> None:
-        """Inicializa una nueva instancia de Lunita.
-
-        Args:
-            apikey: Clave API para la autenticación.
-        """
-        super().__init__(apiKey=apikey)
+    def __init__(self) -> None:
+        """Inicializa una nueva instancia de Lunita."""
         self.emocion = Emocional.MotorEmocional("./app/json/emociones.json")
         self.context = Context.CreadorContexto(
             PERSONALITY_PROMPT
