@@ -23,7 +23,7 @@ Hacer que cada interacción sea mágica, graciosa y tierna, como si un aprendiz 
 
 # Configuración de la API
 API_CONFIG = {
-    'referer': 'pardalis.mx',
+    'referer': 'lunita.me',
     'title': 'Lunita',
     'model': 'openrouter/sonoma-sky-alpha'
 }

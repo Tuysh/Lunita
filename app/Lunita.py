@@ -1,7 +1,8 @@
-from typing import List, Dict, Any, Optional
 import logging
-from . import Context, Emocional, OpenAI, Guardian
-from .config import PERSONALITY_PROMPT, API_CONFIG, CONTEXT_SETTINGS, ERROR_MESSAGES
+from typing import Dict, List, Optional
+
+from . import Context, Emocional, Guardian, OpenAI
+from .config import API_CONFIG, CONTEXT_SETTINGS, ERROR_MESSAGES, PERSONALITY_PROMPT
 
 # Configuración del logger
 logging.basicConfig(level=logging.INFO)
