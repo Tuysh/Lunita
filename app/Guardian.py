@@ -1,10 +1,10 @@
-from .OpenAI import client
+from .Client import client
 
 
 class Guardian:
     def _analiceMessage(self, message: str):
         """
-        Funcion para mandar mensaje a la API de OpenAI
+        Funcion para mandar mensaje a la API de Open Router
         """
         return client.moderations.create(model="omni-moderation-latest", input=message)
 

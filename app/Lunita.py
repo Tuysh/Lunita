@@ -1,7 +1,7 @@
 import logging
 from typing import Dict, List, Optional
 
-from . import Context, Emocional, Guardian, OpenAI
+from . import Context, Emocional, Guardian, Client
 from .config import API_CONFIG, CONTEXT_SETTINGS, ERROR_MESSAGES, PERSONALITY_PROMPT
 
 # Configuración del logger
@@ -29,7 +29,7 @@ class Lunita(Guardian.Guardian):
 
     def _prepare_messages(self, message: str) -> List[Dict[str, str]]:
         """
-        Prepara los mensajes para la API de OpenAI.
+        Prepara los mensajes para la API de OpenRouter.
 
         Args:
             message: Mensaje del usuario.
@@ -41,7 +41,7 @@ class Lunita(Guardian.Guardian):
 
     def _get_api_response(self, messages: List[Dict[str, str]]) -> Optional[str]:
         """
-        Obtiene la respuesta de la API de OpenAI.
+        Obtiene la respuesta de la API de OpenRouter.
 
         Args:
             messages: Lista de mensajes para enviar a la API.
@@ -50,7 +50,7 @@ class Lunita(Guardian.Guardian):
             La respuesta de la API o None si hay un error.
         """
         try:
-            completion = OpenAI.clientOpenRouter.chat.completions.create(
+            completion = Client.clientOpenRouter.chat.completions.create(
                 extra_headers={
                     "HTTP-Referer": API_CONFIG["referer"],
                     "X-Title": API_CONFIG["title"],
