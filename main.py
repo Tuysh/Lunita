@@ -1,6 +1,5 @@
 from app import Lunita
 
 lunita = Lunita()
-pregunta = "Te quiero mucho"
-print("Pregunta: " + pregunta)
+pregunta = input("Cuestion: ")
 print("Respuesta: " + lunita.send_message(pregunta))
