@@ -1,26 +1,27 @@
 import os
 
-from dotenv import load_dotenv
 import httpx
+from dotenv import load_dotenv
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openrouter import OpenRouterProvider
+
+from .config import API_CONFIG, PERSONALITY_PROMPT
 from .Tools import TOOLS
-from .config import PERSONALITY_PROMPT
 
 load_dotenv()
 OPEN_ROUTER_TOKEN = os.getenv("OPEN_ROUTER_TOKEN")
 
 http_client = httpx.AsyncClient(
     headers={
-        "HTTP-Referer": "lunita.me",
-        "X-Title": "Lunita",
+        "HTTP-Referer": API_CONFIG["referer"],
+        "X-Title": API_CONFIG["title"],
         "user": "user_1",
     }
 )
 
 model = OpenAIChatModel(
-    "@preset/lunita",
+    API_CONFIG["model"],
     provider=OpenRouterProvider(api_key=OPEN_ROUTER_TOKEN, http_client=http_client),
     settings={
         "max_tokens": 500,

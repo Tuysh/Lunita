@@ -25,7 +25,7 @@ Hacer que cada interacción sea mágica, graciosa y tierna, como si un aprendiz 
 API_CONFIG = {
     'referer': 'lunita.me',
     'title': 'Lunita',
-    'model': 'openrouter/sonoma-sky-alpha'
+    'model': '@preset/lunita'
 }
 
 # Configuración del contexto
