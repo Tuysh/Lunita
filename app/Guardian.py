@@ -1,4 +1,3 @@
-from .Client import client
 
 
 class Guardian:
@@ -6,7 +5,7 @@ class Guardian:
         """
         Funcion para mandar mensaje a la API de Open Router
         """
-        return client.moderations.create(model="omni-moderation-latest", input=message)
+        pass
 
     def getVeredict(self, message: str) -> bool:
         """

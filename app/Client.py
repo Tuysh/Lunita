@@ -12,24 +12,28 @@ from .Tools import TOOLS
 load_dotenv()
 OPEN_ROUTER_TOKEN = os.getenv("OPEN_ROUTER_TOKEN")
 
-http_client = httpx.AsyncClient(
-    headers={
-        "HTTP-Referer": API_CONFIG["referer"],
-        "X-Title": API_CONFIG["title"],
-        "user": "user_1",
-    }
-)
 
-model = OpenAIChatModel(
-    API_CONFIG["model"],
-    provider=OpenRouterProvider(api_key=OPEN_ROUTER_TOKEN, http_client=http_client),
-    settings={
-        "max_tokens": 500,
-        "temperature": 1.5,
-        "top_p": 0.9,
-        "frequency_penalty": 0.5,
-        "presence_penalty": 0.5,
-    },
-)
+def create_agent(user: str) -> Agent:
+    http_client = httpx.AsyncClient(
+        headers={
+            "HTTP-Referer": API_CONFIG["referer"],
+            "X-Title": API_CONFIG["title"],
+            "user": user,
+        }
+    )
 
-agent = Agent(model, tools=TOOLS, system_prompt=PERSONALITY_PROMPT)
+    model = OpenAIChatModel(
+        API_CONFIG["model"],
+        provider=OpenRouterProvider(
+            api_key=OPEN_ROUTER_TOKEN, http_client=http_client
+        ),
+        settings={
+            "max_tokens": 500,
+            "temperature": 1.5,
+            "top_p": 0.9,
+            "frequency_penalty": 0.5,
+            "presence_penalty": 0.5,
+        },
+    )
+
+    return Agent(model, tools=TOOLS, system_prompt=PERSONALITY_PROMPT)
