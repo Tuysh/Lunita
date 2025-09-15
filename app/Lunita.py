@@ -1,7 +1,7 @@
 import logging
 
 from . import Emocional, Guardian
-from .Client import create_agent
+from .Client import Client
 from .config import ERROR_MESSAGES
 
 # Configuración del logger
@@ -21,7 +21,7 @@ class Lunita(Guardian.Guardian):
         """Inicializa una nueva instancia de Lunita."""
         self.user = user
         self.emocion = Emocional.MotorEmocional("./app/json/emociones.json")
-        self.agent = create_agent(self.user)
+        self.client = Client(user=user)
 
     def send_message(self, message: str) -> str:
         """
@@ -33,6 +33,8 @@ class Lunita(Guardian.Guardian):
         Returns:
             Respuesta de Lunita o mensaje de error.
         """
+
+
         if not message or not isinstance(message, str):
             return ERROR_MESSAGES["invalid_message"]
 
@@ -40,8 +42,7 @@ class Lunita(Guardian.Guardian):
         #     return ERROR_MESSAGES['invalid_message']
 
         try:
-            reply = self.agent.run_sync(message)
-            return reply
+            return self.client.ask(message)
         except Exception as e:
             logger.error(f"Error al llamar a la API: {str(e)}")
             return ERROR_MESSAGES["api_error"]
