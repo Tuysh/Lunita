@@ -81,9 +81,8 @@ class Lunita(Guardian.Guardian):
         if not message or not isinstance(message, str):
             return ERROR_MESSAGES["invalid_message"]
 
-        # La moderación de contenido está actualmente desactivada.
-        # if not self.getVeredict(message=message):
-        #     return ERROR_MESSAGES['invalid_message']
+        if not self.getVeredict(message=message):
+            return ERROR_MESSAGES['invalid_message']
 
         try:
             return self.client.ask(message)

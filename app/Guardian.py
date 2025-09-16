@@ -1,3 +1,5 @@
+from spanlp.palabrota import Palabrota
+
 class Guardian:
     """
     NAME
@@ -13,29 +15,16 @@ class Guardian:
         se espera que interactúe con una API de moderación.
     """
 
-    def _analiceMessage(self, message: str):
-        """Analiza un mensaje utilizando un servicio de moderación.
-
-        NOTE
-            Este método es un marcador de posición (placeholder) y no está implementado.
-            Se espera que realice una llamada a una API de moderación (por ejemplo,
-            la API de moderación de OpenAI) y devuelva el resultado.
-
-        PARAMETERS
-            message
-                El mensaje del usuario que se va a analizar.
-
-        RETURN VALUES
-            Un objeto de resultado de la API de moderación.
-        """
-        pass
+    def __init__(self):
+        self.palabrota = Palabrota()
 
     def getVeredict(self, message: str) -> bool:
         """Determina si un mensaje es apropiado según las directrices.
 
         DESCRIPTION
-            Llama al método `_analiceMessage` y comprueba el indicador `flagged` en
-            la respuesta para decidir si el mensaje es aceptable.
+            Analiza el mensaje utilizando el detector de palabrotas y devuelve
+            `True` si el mensaje no contiene palabrotas, lo que indica que es
+            apropiado.
 
         PARAMETERS
             message
@@ -46,8 +35,4 @@ class Guardian:
                 `True` si el mensaje es apropiado, `False` si ha sido marcado como
                 inapropiado.
         """
-        # La siguiente línea está comentada porque _analiceMessage no está implementado.
-        # if self._analiceMessage(message).results[0].flagged:
-        #     return False
-
-        return True
+        return not self.palabrota.contains_palabrota(message)

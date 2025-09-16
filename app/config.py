@@ -77,7 +77,7 @@ CONTEXT_SETTINGS = {
 
 # Mensajes de error
 ERROR_MESSAGES = {
-    'invalid_message': 'Tu mensaje no cumple las normas',
+    'invalid_message': 'Este mensaje no sigue las estrellitas de las normas ⭐, ¿lo ajustas un poquito?',
     'api_error': '¡Ups! Mis bolas de cristal están un poco nubladas. Por favor, inténtalo de nuevo más tarde.'
 }
 """
