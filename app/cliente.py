@@ -8,25 +8,25 @@ from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openrouter import OpenRouterProvider
 
-from .config import API_CONFIG, PERSONALITY_PROMPT
-from .Tools import TOOLS
+from .configuracion import CONFIG_API, PROMPT_PERSONALIDAD
+from .herramientas import HERRAMIENTAS
 
 load_dotenv()
 OPEN_ROUTER_TOKEN = os.getenv("OPEN_ROUTER_TOKEN")
 
-MessagesTA = TypeAdapter(list[ModelMessage])
+AdaptadorMensajes = TypeAdapter(list[ModelMessage])
 
 
-class Client:
+class Cliente:
     """
     NAME
-        Client - Cliente de alto nivel para interactuar con el agente pydantic-ai vía OpenRouter.
+        Cliente - Cliente de alto nivel para interactuar con el agente pydantic-ai vía OpenRouter.
 
     SYNOPSIS
-        - c = Client(user)
-        - c.ask(message) -> str
-        - c.dump_json() -> bytes
-        - c.load_json(b) -> None
+        - c = Cliente(usuario)
+        - c.preguntar(mensaje) -> str
+        - c.exportar_json() -> bytes
+        - c.importar_json(b) -> None
 
     DESCRIPTION
         Gestiona la identidad del usuario, el historial de mensajes y la creación de un
@@ -38,19 +38,19 @@ class Client:
             Token de API empleado por `OpenRouterProvider`.
 
     FILES
-        app/config.py
-            Debe exponer `API_CONFIG` y `PERSONALITY_PROMPT`.
+        app/configuracion.py
+            Debe exponer `CONFIG_API` y `PROMPT_PERSONALIDAD`.
 
     SEE ALSO
         `pydantic_ai.Agent`, `pydantic_ai.models.openai.OpenAIChatModel`,
         `pydantic_ai.providers.openrouter.OpenRouterProvider`.
     """
 
-    def __init__(self, user: str, mood: str) -> None:
+    def __init__(self, usuario: str, emocion: str) -> None:
         """Inicializa la instancia del cliente.
 
         PARAMETERS
-            user
+            usuario
                 Identificador del usuario final propagado en cabeceras HTTP para
                 trazabilidad y control de uso.
 
@@ -61,18 +61,18 @@ class Client:
             No lanza errores propios, pero podrían propagarse errores durante la
             creación del agente si la configuración o el entorno son inválidos.
         """
-        self.user = user
-        self.mood = mood
-        self.history: list[ModelMessage] = []
-        self.agent = self._create_agent()
+        self.usuario = usuario
+        self.emocion = emocion
+        self.historial: list[ModelMessage] = []
+        self.agente = self._crear_agente()
 
-    def _create_agent(self) -> Agent:
+    def _crear_agente(self) -> Agent:
         """Crea y configura el `Agent` subyacente.
 
         DESCRIPTION
             Construye un `httpx.AsyncClient` con cabeceras de identificación, inicializa
             el modelo `OpenAIChatModel` con `OpenRouterProvider` y aplica los ajustes de
-            generación especificados en `API_CONFIG`.
+            generación especificados en `CONFIG_API`.
 
         RETURN VALUES
             Agent
@@ -84,14 +84,14 @@ class Client:
         """
         http_client = httpx.AsyncClient(
             headers={
-                "HTTP-Referer": API_CONFIG["referer"],
-                "X-Title": API_CONFIG["title"],
-                "user": self.user,
+                "HTTP-Referer": CONFIG_API["referente"],
+                "X-Title": CONFIG_API["titulo"],
+                "user": self.usuario,
             }
         )
 
         model = OpenAIChatModel(
-            API_CONFIG["model"],
+            CONFIG_API["modelo"],
             provider=OpenRouterProvider(
                 api_key=OPEN_ROUTER_TOKEN, http_client=http_client
             ),
@@ -106,18 +106,18 @@ class Client:
 
         return Agent(
             model,
-            tools=TOOLS,
+            tools=HERRAMIENTAS,
             system_prompt=(
-                PERSONALITY_PROMPT
-                + f"\n A lunita le ocurrio esto antes de las sesión actual, por lo que adapta su respuestas a sus emociones actuales en su respuesta: {str(self.mood)}"
+                PROMPT_PERSONALIDAD
+                + f"\n A lunita le ocurrio esto antes de las sesión actual, por lo que adapta su respuestas a sus emociones actuales en su respuesta: {str(self.emocion)}"
             ),
         )
 
-    def ask(self, message: str) -> str:
+    def preguntar(self, mensaje: str) -> str:
         """Envía una consulta al agente y devuelve la respuesta de texto.
 
         PARAMETERS
-            message
+            mensaje
                 Mensaje del usuario a enviar al modelo. Si existe historial, se reenvía
                 para mantener el contexto conversacional.
 
@@ -126,32 +126,32 @@ class Client:
                 Salida textual generada por el modelo.
 
         SIDE EFFECTS
-            Actualiza `self.history` con los nuevos mensajes producidos por el agente.
+            Actualiza `self.historial` con los nuevos mensajes producidos por el agente.
 
         ERRORS
             Puede propagar errores del proveedor o de red durante la ejecución.
         """
-        r = self.agent.run_sync(message, message_history=self.history or None)
+        r = self.agente.run_sync(mensaje, message_history=self.historial or None)
 
-        self.history.extend(r.new_messages())
+        self.historial.extend(r.new_messages())
 
         return r.output
 
-    def dump_json(self) -> bytes:
+    def exportar_json(self) -> bytes:
         """Serializa el historial de conversación a JSON (bytes).
 
         RETURN VALUES
             bytes
                 Representación JSON (UTF-8) del historial actual.
         """
-        return MessagesTA.dump_json(self.history)
+        return AdaptadorMensajes.dump_json(self.historial)
 
-    def load_json(self, b: bytes) -> None:
+    def importar_json(self, b: bytes) -> None:
         """Restaura el historial de conversación desde una carga JSON.
 
         PARAMETERS
             b
-                Bytes en formato JSON previamente generados por `dump_json()`.
+                Bytes en formato JSON previamente generados por `exportar_json()`.
 
         RETURN VALUES
             None
@@ -160,4 +160,5 @@ class Client:
             Puede propagar errores de validación si el JSON no es compatible con el
             esquema de `pydantic_ai.messages.ModelMessage`.
         """
-        self.history = MessagesTA.validate_json(b)
+        self.historial = AdaptadorMensajes.validate_json(b)
+

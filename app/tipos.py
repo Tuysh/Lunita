@@ -1,7 +1,7 @@
 
 """
 NAME
-    Typos - Módulo para la definición de alias de tipos personalizados.
+    tipos - Módulo para la definición de alias de tipos personalizados.
 
 DESCRIPTION
     Este módulo centraliza la definición de alias de tipos (TypeAlias) para mejorar
@@ -12,7 +12,7 @@ from typing import TypeAlias
 
 from openai.types.chat import ChatCompletionMessageParam
 
-Mensaje: TypeAlias = ChatCompletionMessageParam
+TipoMensaje: TypeAlias = ChatCompletionMessageParam
 """
 Alias para el tipo `ChatCompletionMessageParam` de la biblioteca de OpenAI.
 

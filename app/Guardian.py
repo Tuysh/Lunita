@@ -7,7 +7,7 @@ class Guardian:
 
     SYNOPSIS
         - g = Guardian()
-        - g.getVeredict(message) -> bool
+        - g.obtener_veredicto(message) -> bool
 
     DESCRIPTION
         Esta clase se encarga de analizar los mensajes de los usuarios para determinar
@@ -18,7 +18,7 @@ class Guardian:
     def __init__(self):
         self.palabrota = Palabrota()
 
-    def getVeredict(self, message: str) -> bool:
+    def obtener_veredicto(self, message: str) -> bool:
         """Determina si un mensaje es apropiado según las directrices.
 
         DESCRIPTION

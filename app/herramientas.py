@@ -1,5 +1,5 @@
 from bisect import bisect_right
-from random import randint
+from random import sample
 
 
 def obtener_signo_zodiacal(dia: int, mes: int) -> dict[str, str]:
@@ -162,11 +162,7 @@ def tarot() -> list[str]:
         "Reina De Bastos",
     ]
 
-    return [
-        cartas[randint(0, len(cartas) - 1)],
-        cartas[randint(0, len(cartas) - 1)],
-        cartas[randint(0, len(cartas) - 1)],
-    ]
+    return sample(cartas, 3)
 
 
-TOOLS = [tarot, obtener_signo_zodiacal]
+HERRAMIENTAS = [tarot, obtener_signo_zodiacal]

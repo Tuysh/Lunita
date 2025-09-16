@@ -10,6 +10,6 @@ DESCRIPTION
     principal del paquete, permitiendo su importación directa desde `app`.
 """
 
-from .Lunita import Lunita
+from .lunita import Lunita
 
 __all__ = ["Lunita"]

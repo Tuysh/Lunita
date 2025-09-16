@@ -11,52 +11,52 @@ DESCRIPTION
 
 import logging
 
-from . import Emocional, Guardian
-from .Client import Client
-from .config import ERROR_MESSAGES
+from . import emocional, guardian
+from .cliente import Cliente
+from .configuracion import MENSAJES_ERROR
 
 # Configuración del logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class Lunita(Guardian.Guardian):
+class Lunita(guardian.Guardian):
     """
     NAME
         Lunita - Clase principal que implementa la personalidad de una vidente mágica IA.
 
     SYNOPSIS
-        - l = Lunita(user)
-        - l.send_message(message) -> str
+        - l = Lunita(usuario)
+        - l.enviar_mensaje(mensaje) -> str
 
     DESCRIPTION
         Esta clase es el punto de entrada para interactuar con Lunita. Hereda de
         `Guardian` para incorporar la moderación de contenido y utiliza una instancia
-        de `Client` para comunicarse con el modelo de lenguaje y un `MotorEmocional`
+        de `Cliente` para comunicarse con el modelo de lenguaje y un `MotorEmocional`
         para gestionar estados internos.
 
     ATTRIBUTES
-        user : str
+        usuario : str
             Identificador del usuario que interactúa con esta instancia.
-        emocion : Emocional.MotorEmocional
+        emocion : emocional.MotorEmocional
             Instancia del motor emocional para gestionar el "humor" de Lunita.
-        client : Client
+        cliente : Cliente
             Cliente para interactuar con la API del modelo de lenguaje.
     """
 
-    def __init__(self, user: str) -> None:
+    def __init__(self, usuario: str) -> None:
         """Inicializa una nueva instancia de Lunita.
 
         PARAMETERS
-            user
+            usuario
                 El identificador único del usuario final.
         """
         super().__init__()
-        self.user = user
-        self.emocion = Emocional.MotorEmocional("./app/json/emociones.json")
-        self.client = Client(user=user, mood=self.emocion.getMood())
+        self.usuario = usuario
+        self.emocion = emocional.MotorEmocional("./app/json/emociones.json")
+        self.cliente = Cliente(usuario=usuario, emocion=self.emocion.obtener_emocion())
 
-    def send_message(self, message: str) -> str:
+    def enviar_mensaje(self, mensaje: str) -> str:
         """Procesa un mensaje del usuario y devuelve la respuesta de Lunita.
 
         DESCRIPTION
@@ -66,7 +66,7 @@ class Lunita(Guardian.Guardian):
             mensajes de error predefinidos si es necesario.
 
         PARAMETERS
-            message
+            mensaje
                 El mensaje de texto enviado por el usuario.
 
         RETURN VALUES
@@ -75,17 +75,17 @@ class Lunita(Guardian.Guardian):
                 es inválida o si ocurre un problema con la API.
 
         ERRORS
-            Si la llamada a `self.client.ask(message)` falla, se registra un error
+            Si la llamada a `self.cliente.preguntar(mensaje)` falla, se registra un error
             y se devuelve un mensaje genérico de error de API.
         """
-        if not message or not isinstance(message, str):
-            return ERROR_MESSAGES["invalid_message"]
+        if not mensaje or not isinstance(mensaje, str):
+            return MENSAJES_ERROR["mensaje_invalido"]
 
-        if not self.getVeredict(message=message):
-            return ERROR_MESSAGES['invalid_message']
+        if not self.obtener_veredicto(message=mensaje):
+            return MENSAJES_ERROR['mensaje_invalido']
 
         try:
-            return self.client.ask(message)
+            return self.cliente.preguntar(mensaje)
         except Exception as e:
             logger.error(f"Error al llamar a la API: {str(e)}")
-            return ERROR_MESSAGES["api_error"]
+            return MENSAJES_ERROR["error_api"]

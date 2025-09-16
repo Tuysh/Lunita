@@ -2,14 +2,14 @@ import json
 import random
 
 
-class ObtenerDatos:
+class CargadorDatos:
     """
     NAME
-        ObtenerDatos - Clase base para la carga de datos desde un archivo JSON.
+        CargadorDatos - Clase base para la carga de datos desde un archivo JSON.
 
     SYNOPSIS
-        - od = ObtenerDatos(ruta)
-        - od.obtenerDatos() -> dict
+        - cd = CargadorDatos(ruta)
+        - cd.cargar_datos() -> dict
 
     DESCRIPTION
         Esta clase proporciona una funcionalidad simple para leer un archivo JSON desde
@@ -25,7 +25,7 @@ class ObtenerDatos:
         """
         self.ruta = ruta
 
-    def obtenerDatos(self) -> dict:
+    def cargar_datos(self) -> dict:
         """Lee y decodifica el archivo JSON.
 
         RETURN VALUES
@@ -41,23 +41,23 @@ class ObtenerDatos:
         return datos
 
 
-class MotorEmocional(ObtenerDatos):
+class MotorEmocional(CargadorDatos):
     """
     NAME
         MotorEmocional - Gestiona el estado emocional de Lunita.
 
     SYNOPSIS
         - me = MotorEmocional(ruta)
-        - me.getMood() -> str
-        - me.getNewMood() -> str
+        - me.obtener_emocion() -> str
+        - me.obtener_nueva_emocion() -> str
 
     DESCRIPTION
-        Hereda de `ObtenerDatos` para cargar una lista de emociones desde un archivo
+        Hereda de `CargadorDatos` para cargar una lista de emociones desde un archivo
         JSON y proporciona métodos para obtener una emoción aleatoria, ya sea la
         actual o una nueva.
 
     ATTRIBUTES
-        mood : int
+        emocion_actual : int
             Índice numérico que representa la emoción actual en la lista de emociones.
     """
 
@@ -74,26 +74,26 @@ class MotorEmocional(ObtenerDatos):
                 Ruta al archivo JSON que contiene la lista de emociones.
         """
         super().__init__(ruta=ruta)
-        self.mood = random.randint(0, len(self.obtenerDatos()) - 1)
+        self.emocion_actual = random.randint(0, len(self.cargar_datos()) - 1)
 
-    def getMood(self) -> str:
+    def obtener_emocion(self) -> str:
         """Obtiene la emoción actual.
 
         RETURN VALUES
             str
                 La cadena de texto que representa la emoción actual.
         """
-        return self.obtenerDatos()[self.mood]
+        return self.cargar_datos()[self.emocion_actual]
 
-    def getNewMood(self) -> str:
+    def obtener_nueva_emocion(self) -> str:
         """Selecciona y devuelve una nueva emoción aleatoria.
 
         SIDE EFFECTS
-            Modifica el atributo `self.mood` a un nuevo valor aleatorio.
+            Modifica el atributo `self.emocion_actual` a un nuevo valor aleatorio.
 
         RETURN VALUES
             str
                 La cadena de texto de la nueva emoción seleccionada.
         """
-        self.mood = random.randint(0, len(self.obtenerDatos()) - 1)
-        return self.obtenerDatos()[self.mood]
+        self.emocion_actual = random.randint(0, len(self.cargar_datos()) - 1)
+        return self.cargar_datos()[self.emocion_actual]

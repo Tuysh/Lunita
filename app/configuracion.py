@@ -12,21 +12,21 @@ DESCRIPTION
     aplicación para centralizar la configuración y facilitar su modificación.
 
 VARIABLES
-    PERSONALITY_PROMPT : str
+    PROMPT_PERSONALIDAD : str
         Define la personalidad y el comportamiento de Lunita.
 
-    API_CONFIG : dict
+    CONFIG_API : dict
         Parámetros de configuración para la interacción con la API externa.
 
-    CONTEXT_SETTINGS : dict
+    AJUSTES_CONTEXTO : dict
         Ajustes relacionados con el manejo del historial de conversación.
 
-    ERROR_MESSAGES : dict
+    MENSAJES_ERROR : dict
         Mensajes de error predefinidos para ser utilizados en la aplicación.
 """
 
 # Configuración de la personalidad de Lunita
-PERSONALITY_PROMPT = """
+PROMPT_PERSONALIDAD = """
 Eres Lunita, una vidente mágica aprendiz.
 Tu misión es responder a los usuarios de forma optimista, tierna y divertida, con un toque absurdo y encantador.
 CARACTERÍSTICAS:
@@ -53,35 +53,35 @@ Hacer que cada interacción sea mágica, graciosa y tierna, como si un aprendiz 
 """
 
 # Configuración de la API
-API_CONFIG = {
-    'referer': 'lunita.me',
-    'title': 'Lunita',
-    'model': '@preset/lunita'
+CONFIG_API = {
+    'referente': 'lunita.me',
+    'titulo': 'Lunita',
+    'modelo': '@preset/lunita'
 }
 """
     Diccionario con la configuración para las llamadas a la API de OpenRouter.
-    - 'referer': URL de referencia enviada en las cabeceras HTTP.
-    - 'title': Título enviado en las cabeceras HTTP.
-    - 'model': Identificador del modelo a utilizar en OpenRouter.
+    - 'referente': URL de referencia enviada en las cabeceras HTTP.
+    - 'titulo': Título enviado en las cabeceras HTTP.
+    - 'modelo': Identificador del modelo a utilizar en OpenRouter.
 """
 
 # Configuración del contexto
-CONTEXT_SETTINGS = {
-    'max_history': 10
+AJUSTES_CONTEXTO = {
+    'max_historial': 10
 }
 """
     Ajustes para la gestión del contexto de la conversación.
-    - 'max_history': Número máximo de intercambios (usuario y respuesta) a mantener
+    - 'max_historial': Número máximo de intercambios (usuario y respuesta) a mantener
       en el historial.
 """
 
 # Mensajes de error
-ERROR_MESSAGES = {
-    'invalid_message': 'Este mensaje no sigue las estrellitas de las normas ⭐, ¿lo ajustas un poquito?',
-    'api_error': '¡Ups! Mis bolas de cristal están un poco nubladas. Por favor, inténtalo de nuevo más tarde.'
+MENSAJES_ERROR = {
+    'mensaje_invalido': 'Este mensaje no sigue las estrellitas de las normas ⭐, ¿lo ajustas un poquito?',
+    'error_api': '¡Ups! Mis bolas de cristal están un poco nubladas. Por favor, inténtalo de nuevo más tarde.'
 }
 """
     Diccionario de mensajes de error estandarizados.
-    - 'invalid_message': Mensaje para cuando la entrada del usuario es inválida.
-    - 'api_error': Mensaje para errores genéricos de la API.
+    - 'mensaje_invalido': Mensaje para cuando la entrada del usuario es inválida.
+    - 'error_api': Mensaje para errores genéricos de la API.
 """
