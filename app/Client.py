@@ -45,7 +45,8 @@ class Client:
         `pydantic_ai.Agent`, `pydantic_ai.models.openai.OpenAIChatModel`,
         `pydantic_ai.providers.openrouter.OpenRouterProvider`.
     """
-    def __init__(self, user: str) -> None:
+
+    def __init__(self, user: str, mood: str) -> None:
         """Inicializa la instancia del cliente.
 
         PARAMETERS
@@ -61,6 +62,7 @@ class Client:
             creación del agente si la configuración o el entorno son inválidos.
         """
         self.user = user
+        self.mood = mood
         self.history: list[ModelMessage] = []
         self.agent = self._create_agent()
 
@@ -102,7 +104,14 @@ class Client:
             },
         )
 
-        return Agent(model, tools=TOOLS, system_prompt=PERSONALITY_PROMPT)
+        return Agent(
+            model,
+            tools=TOOLS,
+            system_prompt=(
+                PERSONALITY_PROMPT
+                + f"\n A lunita le ocurrio esto antes de las sesión actual, por lo que adapta su respuestas a sus emociones actuales en su respuesta: {str(self.mood)}"
+            ),
+        )
 
     def ask(self, message: str) -> str:
         """Envía una consulta al agente y devuelve la respuesta de texto.

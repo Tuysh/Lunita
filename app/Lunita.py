@@ -54,7 +54,7 @@ class Lunita(Guardian.Guardian):
         super().__init__()
         self.user = user
         self.emocion = Emocional.MotorEmocional("./app/json/emociones.json")
-        self.client = Client(user=user)
+        self.client = Client(user=user, mood=self.emocion.getMood())
 
     def send_message(self, message: str) -> str:
         """Procesa un mensaje del usuario y devuelve la respuesta de Lunita.
