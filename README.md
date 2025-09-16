@@ -55,6 +55,9 @@ core/
 ├── main.py             # Punto de entrada de la aplicación.
 ├── .gitignore          # Archivos ignorados por Git.
 ├── LICENSE             # Licencia del proyecto.
+├── example.env         # Variables de entorno de ejemplo.
+├── .editorconfig       # Configuración del editor.
+├── requirements.txt    # Dependencias del proyecto.
 └── README.md           # Este archivo.
 ```
 
