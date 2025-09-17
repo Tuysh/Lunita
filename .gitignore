@@ -12,3 +12,6 @@ venv
 
 # Enrutador Entrenado
 **/intent_router.joblib
+
+# ruff
+.ruff_cache
