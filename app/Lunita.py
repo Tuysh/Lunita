@@ -82,7 +82,7 @@ class Lunita(guardian.Guardian):
             return MENSAJES_ERROR["mensaje_invalido"]
 
         if not self.obtener_veredicto(message=mensaje):
-            return MENSAJES_ERROR['mensaje_invalido']
+            return MENSAJES_ERROR["mensaje_invalido"]
 
         try:
             return self.cliente.preguntar(mensaje)

@@ -1,4 +1,3 @@
-
 """
 NAME
     tipos - Módulo para la definición de alias de tipos personalizados.

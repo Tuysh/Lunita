@@ -1,5 +1,6 @@
 from spanlp.palabrota import Palabrota
 
+
 class Guardian:
     """
     NAME

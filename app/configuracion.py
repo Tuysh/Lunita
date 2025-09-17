@@ -52,11 +52,7 @@ Cada respuesta debe ser mágica, graciosa y tierna, como un aprendiz interpretan
 """
 
 # Configuración de la API
-CONFIG_API = {
-    'referente': 'lunita.me',
-    'titulo': 'Lunita',
-    'modelo': '@preset/lunita'
-}
+CONFIG_API = {"referente": "lunita.me", "titulo": "Lunita", "modelo": "@preset/lunita"}
 """
     Diccionario con la configuración para las llamadas a la API de OpenRouter.
     - 'referente': URL de referencia enviada en las cabeceras HTTP.
@@ -65,9 +61,7 @@ CONFIG_API = {
 """
 
 # Configuración del contexto
-AJUSTES_CONTEXTO = {
-    'max_historial': 10
-}
+AJUSTES_CONTEXTO = {"max_historial": 10}
 """
     Ajustes para la gestión del contexto de la conversación.
     - 'max_historial': Número máximo de intercambios (usuario y respuesta) a mantener
@@ -76,8 +70,8 @@ AJUSTES_CONTEXTO = {
 
 # Mensajes de error
 MENSAJES_ERROR = {
-    'mensaje_invalido': 'Este mensaje no sigue las estrellitas de las normas ⭐, ¿lo ajustas un poquito?',
-    'error_api': '¡Ups! Mis bolas de cristal están un poco nubladas. Por favor, inténtalo de nuevo más tarde.'
+    "mensaje_invalido": "Este mensaje no sigue las estrellitas de las normas ⭐, ¿lo ajustas un poquito?",
+    "error_api": "¡Ups! Mis bolas de cristal están un poco nubladas. Por favor, inténtalo de nuevo más tarde.",
 }
 """
     Diccionario de mensajes de error estandarizados.
