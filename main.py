@@ -7,5 +7,4 @@ while True:
     if pregunta.lower() == "exit":
         break
     print("\nRespuesta: " + lunita.enviar_mensaje(pregunta))
-    print("\n")
 
