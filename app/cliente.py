@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 import httpx
 from dotenv import load_dotenv
@@ -46,7 +47,12 @@ class Cliente:
         `pydantic_ai.providers.openrouter.OpenRouterProvider`.
     """
 
-    def __init__(self, usuario: str, emocion: str) -> None:
+    def __init__(
+        self,
+        usuario: str,
+        emocion: str,
+        instrucciones_adiccionales: Optional[str] = None,
+    ) -> None:
         """Inicializa la instancia del cliente.
 
         PARAMETERS
@@ -63,6 +69,7 @@ class Cliente:
         """
         self.usuario = usuario
         self.emocion = emocion
+        self.instrucciones_adiccionales = instrucciones_adiccionales
         self.historial: list[ModelMessage] = []
         self.agente = self._crear_agente()
 
@@ -110,6 +117,11 @@ class Cliente:
             system_prompt=(
                 PROMPT_PERSONALIDAD
                 + f"\n A lunita le ocurrio esto antes de las sesión actual, por lo que adapta su respuestas a sus emociones actuales en su respuesta: {str(self.emocion)}"
+                + (
+                    "\n" + self.instrucciones_adiccionales
+                    if self.instrucciones_adiccionales
+                    else ""
+                )
             ),
         )
 
@@ -161,4 +173,3 @@ class Cliente:
             esquema de `pydantic_ai.messages.ModelMessage`.
         """
         self.historial = AdaptadorMensajes.validate_json(b)
-
