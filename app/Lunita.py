@@ -9,7 +9,6 @@ DESCRIPTION
     respuestas coherentes con la personalidad de la IA.
 """
 
-import logging
 from typing import Optional
 
 from pydantic_ai.messages import ModelMessage
@@ -18,12 +17,8 @@ from . import emocional, guardian
 from .cliente import Cliente
 from .configuracion import MENSAJES_ERROR
 
-# Configuración del logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
-
-class Lunita(guardian.Guardian, Cliente):
+class Lunita:
     """
     NAME
         Lunita - Clase principal que implementa la personalidad de una vidente mágica IA.
@@ -43,6 +38,10 @@ class Lunita(guardian.Guardian, Cliente):
             Identificador del usuario que interactúa con esta instancia.
         emocion : emocional.MotorEmocional
             Instancia del motor emocional para gestionar el "humor" de Lunita.
+        guardian : guardian.Guardian
+            Instancia del guardian para moderar el contenido.
+        cliente : Cliente
+            Instancia del cliente para comunicarse con el modelo de lenguaje.
     """
 
     def __init__(
@@ -60,18 +59,15 @@ class Lunita(guardian.Guardian, Cliente):
                 El historial de mensajes para mantener el contexto conversacional.
         """
         self.emocion = emocional.MotorEmocional("./app/json/emociones.json")
-
-        guardian.Guardian.__init__(self)
-
-        Cliente.__init__(
-            self,
+        self.guardian = guardian.Guardian()
+        self.cliente = Cliente(
             usuario,
             self.emocion.obtener_emocion(),
             instrucciones_adiccionales,
             historial,
         )
 
-    def enviar_mensaje(self, mensaje: str) -> str:
+    async def predecir(self, mensaje: str) -> str:
         """Procesa un mensaje del usuario y devuelve la respuesta de Lunita.
 
         DESCRIPTION
@@ -100,7 +96,10 @@ class Lunita(guardian.Guardian, Cliente):
             return MENSAJES_ERROR["mensaje_invalido"]
 
         try:
-            return self.preguntar(mensaje)
-        except Exception as e:
-            logger.error(f"Error al llamar a la API: {str(e)}")
+            return await self.cliente.preguntar(mensaje)
+        except Exception:
             return MENSAJES_ERROR["error_api"]
+
+    def cambiar_humor(self) -> None:
+        """Cambia el humor de Lunita."""
+        self.emocion.obtener_nueva_emocion()
