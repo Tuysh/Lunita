@@ -10,6 +10,9 @@ DESCRIPTION
 """
 
 import logging
+from typing import Optional
+
+from pydantic_ai.messages import ModelMessage
 
 from . import emocional, guardian
 from .cliente import Cliente
@@ -44,7 +47,9 @@ class Lunita(guardian.Guardian):
             Cliente para interactuar con la API del modelo de lenguaje.
     """
 
-    def __init__(self, usuario: str) -> None:
+    def __init__(
+        self, usuario: str, historial: Optional[list[ModelMessage]] = None
+    ) -> None:
         """Inicializa una nueva instancia de Lunita.
 
         PARAMETERS
@@ -54,7 +59,11 @@ class Lunita(guardian.Guardian):
         super().__init__()
         self.usuario = usuario
         self.emocion = emocional.MotorEmocional("./app/json/emociones.json")
-        self.cliente = Cliente(usuario=usuario, emocion=self.emocion.obtener_emocion())
+        self.cliente = Cliente(
+            usuario=usuario,
+            emocion=self.emocion.obtener_emocion(),
+            historial=historial,
+        )
 
     def enviar_mensaje(self, mensaje: str) -> str:
         """Procesa un mensaje del usuario y devuelve la respuesta de Lunita.

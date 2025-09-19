@@ -52,6 +52,7 @@ class Cliente:
         usuario: str,
         emocion: str,
         instrucciones_adiccionales: Optional[str] = None,
+        historial: Optional[list[ModelMessage]] = None,
     ) -> None:
         """Inicializa la instancia del cliente.
 
@@ -70,7 +71,7 @@ class Cliente:
         self.usuario = usuario
         self.emocion = emocion
         self.instrucciones_adiccionales = instrucciones_adiccionales
-        self.historial: list[ModelMessage] = []
+        self.historial: list[ModelMessage] = historial or []
         self.agente = self._crear_agente()
 
     def _crear_agente(self) -> Agent:
