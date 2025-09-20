@@ -6,15 +6,15 @@ from dotenv import load_dotenv
 from pydantic import TypeAdapter
 from pydantic_ai import Agent
 from pydantic_ai.messages import ModelMessage
-from pydantic_ai.models.openai import OpenAIChatModel
-from pydantic_ai.providers.openrouter import OpenRouterProvider
+from pydantic_ai.models.mistral import MistralModel
+from pydantic_ai.providers.mistral import MistralProvider
 from .configuracion import AJUSTES_CONTEXTO
 
 from .configuracion import CONFIG_API, PROMPT_PERSONALIDAD
 from .herramientas import HERRAMIENTAS
 
 load_dotenv()
-OPEN_ROUTER_TOKEN = os.getenv("OPEN_ROUTER_TOKEN")
+MISTRAL_API_KEY = os.getenv("MINISTRAL_TOKEN")
 
 AdaptadorMensajes = TypeAdapter(list[ModelMessage])
 
@@ -106,10 +106,10 @@ class Cliente:
             }
         )
 
-        model = OpenAIChatModel(
-            CONFIG_API["modelo"],
-            provider=OpenRouterProvider(
-                api_key=OPEN_ROUTER_TOKEN, http_client=http_client
+        model = MistralModel(
+            model_name=CONFIG_API["modelo"],
+            provider=MistralProvider(
+                api_key=MISTRAL_API_KEY, http_client=http_client
             ),
             settings={
                 "max_tokens": 500,

@@ -47,7 +47,7 @@ OBJETIVO: Ser la amiga mágica que siempre está emocionada de hablar contigo y 
 CONFIG_API = {
     "referente": "lunita.me",
     "titulo": "Lunita - Tu Amiga Vidente",
-    "modelo": "@preset/lunita"
+    "modelo": "mistral-small-latest"
 }
 
 AJUSTES_CONTEXTO = {
