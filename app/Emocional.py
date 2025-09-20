@@ -1,6 +1,9 @@
+import logging
 import random
 
 from .utilidades import CargadorDatos
+
+logger = logging.getLogger(__name__)
 
 
 class MotorEmocional(CargadorDatos):
@@ -37,6 +40,9 @@ class MotorEmocional(CargadorDatos):
         """
         super().__init__(ruta=ruta)
         self.emocion_actual = random.randint(0, len(self.cargar_datos()) - 1)
+        logger.info(
+            f"Motor emocional inicializado con emoción: {self.obtener_emocion()}"
+        )
 
     def obtener_emocion(self) -> str:
         """Obtiene la emoción actual.
@@ -57,5 +63,29 @@ class MotorEmocional(CargadorDatos):
             str
                 La cadena de texto de la nueva emoción seleccionada.
         """
-        self.emocion_actual = random.randint(0, len(self.cargar_datos()) - 1)
-        return self.cargar_datos()[self.emocion_actual]
+        emociones = self.cargar_datos()
+        if not emociones:
+            return "curiosa por los astros"
+
+        nueva_emocion = self.emocion_actual
+        intentos = 0
+        while nueva_emocion == self.emocion_actual and intentos < 10:
+            nueva_emocion = random.randint(0, len(emociones) - 1)
+            intentos += 1
+
+        self.emocion_actual = nueva_emocion
+        emocion_texto = self.obtener_emocion()
+        logger.info(f"Emoción cambiada a: {emocion_texto}")
+        return emocion_texto
+
+    def establecer_emocion_especifica(self, emocion: str) -> bool:
+        """Establece una emoción específica si existe en la lista"""
+        emociones = self.cargar_datos()
+        try:
+            indice = emociones.index(emocion)
+            self.emocion_actual = indice
+            logger.info(f"Emoción cambiada a: {emocion}")
+            return True
+        except ValueError:
+            logger.error(f"Emoción {emocion} no encontrada")
+            return False

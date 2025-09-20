@@ -9,6 +9,7 @@ DESCRIPTION
     respuestas coherentes con la personalidad de la IA.
 """
 
+import logging
 from typing import Optional
 
 from pydantic_ai.messages import ModelMessage
@@ -16,6 +17,8 @@ from pydantic_ai.messages import ModelMessage
 from . import emocional, guardian
 from .cliente import Cliente
 from .configuracion import MENSAJES_ERROR
+
+logger = logging.getLogger(__name__)
 
 
 class Lunita:
@@ -92,14 +95,34 @@ class Lunita:
         if not mensaje or not isinstance(mensaje, str):
             return MENSAJES_ERROR["mensaje_invalido"]
 
-        if not self.obtener_veredicto(message=mensaje):
+        if not self.guardian.obtener_veredicto(mensaje=mensaje):
             return MENSAJES_ERROR["mensaje_invalido"]
 
         try:
             return await self.cliente.preguntar(mensaje)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Error en Lunita.predecir: {e}")
             return MENSAJES_ERROR["error_api"]
 
     def cambiar_humor(self) -> None:
         """Cambia el humor de Lunita."""
-        self.emocion.obtener_nueva_emocion()
+        nueva_emocion = self.emocion.obtener_nueva_emocion()
+        self.cliente.actualizar_emocion(nueva_emocion)
+
+        return self.emocion.obtener_emocion()
+
+    def obtener_estado(self) -> dict:
+        """Obtiene el estado actual de Lunita"""
+        return {
+            "usuario": self.cliente.usuario,
+            "emocion_actual": self.emocion.obtener_emocion(),
+            "total_mensajes": len(self.cliente.historial),
+        }
+
+    def exportar_historial(self) -> bytes:
+        """Exporta el historial de conversación"""
+        return self.cliente.exportar_json()
+
+    def importar_historial(self, datos: bytes) -> None:
+        """Importa un historial de conversación"""
+        self.cliente.importar_json(datos)

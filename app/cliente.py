@@ -8,6 +8,7 @@ from pydantic_ai import Agent
 from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openrouter import OpenRouterProvider
+from .configuracion import AJUSTES_CONTEXTO
 
 from .configuracion import CONFIG_API, PROMPT_PERSONALIDAD
 from .herramientas import HERRAMIENTAS
@@ -122,18 +123,23 @@ class Cliente:
         return Agent(
             model,
             tools=HERRAMIENTAS,
-            system_prompt=(
-                PROMPT_PERSONALIDAD
-                + f"\n A lunita le ocurrio esto antes de las sesión actual, por lo que adapta su respuestas a sus emociones actuales en su respuesta: {str(self.emocion)}"
-                + (
-                    "\n" + self.instrucciones_adiccionales
-                    if self.instrucciones_adiccionales
-                    else ""
-                )
-            ),
+            system_prompt=self._construir_prompt_sistema(),
         )
 
-    def preguntar(self, mensaje: str) -> str:
+    def _construir_prompt_sistema(self) -> str:
+        """Construye el prompt del sistema con la emoción actual"""
+        prompt = PROMPT_PERSONALIDAD
+        prompt += f"\n\nESTADO EMOCIONAL ACTUAL: {self.emocion}"
+        prompt += "\nAdapta todas tus respuestas a este estado emocional de manera sutil pero perceptible."
+
+        if self.instrucciones_adiccionales:
+            prompt += (
+                f"\n\nINSTRUCCIONES ADICIONALES: {self.instrucciones_adiccionales}"
+            )
+
+        return prompt
+
+    async def preguntar(self, mensaje: str) -> str:
         """Envía una consulta al agente y devuelve la respuesta de texto.
 
         PARAMETERS
@@ -151,11 +157,25 @@ class Cliente:
         ERRORS
             Puede propagar errores del proveedor o de red durante la ejecución.
         """
-        r = self.agente.run_sync(mensaje, message_history=self.historial or None)
+        historial_limitado = self._limitar_historial()
+
+        r = await self.agente.run(mensaje, message_history=historial_limitado)
 
         self.historial.extend(r.new_messages())
 
         return r.output
+
+    def _limitar_historial(self) -> Optional[list[ModelMessage]]:
+        """Limita el historial al máximo configurado"""
+        max_historial = AJUSTES_CONTEXTO["max_historial"]
+        if len(self.historial) > max_historial:
+            return self.historial[-max_historial:]
+        return self.historial if self.historial else None
+
+    def actualizar_emocion(self, nueva_emocion: str) -> None:
+        """Actualiza la emoción y recrea el agente"""
+        self.emocion = nueva_emocion
+        self.agente = self._crear_agente()
 
     def exportar_json(self) -> bytes:
         """Serializa el historial de conversación a JSON (bytes).
