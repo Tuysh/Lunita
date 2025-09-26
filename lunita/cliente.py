@@ -1,20 +1,14 @@
-import os
 from typing import Optional
 
 import httpx
-from dotenv import load_dotenv
 from pydantic import TypeAdapter
 from pydantic_ai import Agent
 from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.mistral import MistralModel
 from pydantic_ai.providers.mistral import MistralProvider
-from .configuracion import AJUSTES_CONTEXTO
 
-from .configuracion import CONFIG_API, PROMPT_PERSONALIDAD
+from .configuracion import AJUSTES_CONTEXTO, CONFIG_API, PROMPT_PERSONALIDAD
 from .herramientas import HERRAMIENTAS
-
-load_dotenv()
-MISTRAL_API_KEY = os.getenv("MINISTRAL_TOKEN")
 
 AdaptadorMensajes = TypeAdapter(list[ModelMessage])
 
@@ -36,20 +30,21 @@ class Cliente:
         serializar/deserializar el historial de conversación.
 
     ENVIRONMENT
-        OPEN_ROUTER_TOKEN
-            Token de API empleado por `OpenRouterProvider`.
+        MINISTRAL_TOKEN
+            Token de API empleado por `MistralProvider`.
 
     FILES
         app/configuracion.py
             Debe exponer `CONFIG_API` y `PROMPT_PERSONALIDAD`.
 
     SEE ALSO
-        `pydantic_ai.Agent`, `pydantic_ai.models.openai.OpenAIChatModel`,
-        `pydantic_ai.providers.openrouter.OpenRouterProvider`.
+        `pydantic_ai.Agent`, `pydantic_ai.models.mistral.MistralModel`,
+        `pydantic_ai.providers.mistral.MistralProvider`.
     """
 
     def __init__(
         self,
+        token: str,
         usuario: str,
         emocion: str,
         instrucciones_adiccionales: Optional[str] = None,
@@ -58,6 +53,8 @@ class Cliente:
         """Inicializa la instancia del cliente.
 
         PARAMETERS
+            token
+                Token de API empleado por `MistralProvider`.
             usuario
                 Identificador del usuario final propagado en cabeceras HTTP para
                 trazabilidad y control de uso.
@@ -76,6 +73,7 @@ class Cliente:
             No lanza errores propios, pero podrían propagarse errores durante la
             creación del agente si la configuración o el entorno son inválidos.
         """
+        self.token = token
         self.usuario = usuario
         self.emocion = emocion
         self.instrucciones_adiccionales = instrucciones_adiccionales
@@ -87,7 +85,7 @@ class Cliente:
 
         DESCRIPTION
             Construye un `httpx.AsyncClient` con cabeceras de identificación, inicializa
-            el modelo `OpenAIChatModel` con `OpenRouterProvider` y aplica los ajustes de
+            el modelo `MistralModel` con `MistralProvider` y aplica los ajustes de
             generación especificados en `CONFIG_API`.
 
         RETURN VALUES
@@ -96,7 +94,7 @@ class Cliente:
 
         ERRORS
             Puede propagar errores de red (`httpx`) o de autenticación cuando
-            `OPEN_ROUTER_TOKEN` no está presente o es inválido.
+            `Ministral Token` no está presente o es inválido.
         """
         http_client = httpx.AsyncClient(
             headers={
@@ -108,9 +106,7 @@ class Cliente:
 
         model = MistralModel(
             model_name=CONFIG_API["modelo"],
-            provider=MistralProvider(
-                api_key=MISTRAL_API_KEY, http_client=http_client
-            ),
+            provider=MistralProvider(api_key=self.token, http_client=http_client),
             settings={
                 "max_tokens": 500,
                 "temperature": 1.5,

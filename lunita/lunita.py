@@ -62,12 +62,13 @@ class Lunita:
 
     def __init__(
         self,
+        token: str,
         usuario: str,
         historial: Optional[list[ModelMessage]] = None,
         instrucciones_adiccionales: Optional[str] = None,
     ) -> None:
         self.usuario = usuario
-        self.emocion = emocional.MotorEmocional("./app/json/emociones.json")
+        self.emocion = emocional.MotorEmocional("./lunita/json/emociones.json")
         self.guardian = guardian.Guardian()
 
         # Nuevos componentes para mayor amistad
@@ -82,10 +83,11 @@ class Lunita:
 
         # Cargar respuestas espontáneas
         self.cargador_respuestas = CargadorDatos(
-            "./app/json/respuestas_espontaneas.json"
+            "./lunita/json/respuestas_espontaneas.json"
         )
 
         self.cliente = Cliente(
+            token,
             usuario,
             self.emocion.obtener_emocion(),
             self._construir_instrucciones_contextuales(instrucciones_adiccionales),

@@ -2,16 +2,30 @@
 .env
 
 # Entorno virtual
-venv
+venv/
+.venv/
 
 # Archivos de log
 *.log
 
 # Cache
-**/__pycache__
+**/__pycache__/
+*.pyc
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
 
 # Enrutador Entrenado
 **/intent_router.joblib
 
-# ruff
-.ruff_cache
+# Linting y formateo
+.ruff_cache/
+
+# IDEs
+.vscode/
+*.idea/
+
+# Ejemplos y archivos temporales
+ejemplo.py
