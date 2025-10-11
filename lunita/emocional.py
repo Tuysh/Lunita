@@ -82,7 +82,7 @@ class MotorEmocional(CargadorDatos):
         """Establece una emoción específica si existe en la lista"""
         emociones = self.cargar_datos()
         try:
-            indice = emociones.index(emocion)
+            indice = emociones.index(emocion) # type: ignore
             self.emocion_actual = indice
             logger.info(f"Emoción cambiada a: {emocion}")
             return True

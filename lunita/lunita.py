@@ -10,6 +10,7 @@ from . import emocional, guardian
 from .cliente import Cliente
 from .configuracion import MENSAJES_ERROR
 from .utilidades import CargadorDatos
+from .memoria import MemoriaAfectiva
 
 logger = logging.getLogger(__name__)
 
@@ -23,36 +24,6 @@ class EstadoConversacion:
     momento_ultima_interaccion: datetime
     nivel_confianza: int  # 0-100
     recordatorios_pendientes: list[str]
-
-
-class MemoriaAfectiva:
-    """Sistema de memoria emocional para recordar interacciones pasadas"""
-
-    def __init__(self):
-        self.recuerdos = {}
-        self.momentos_especiales = []
-        self.preferencias_usuario = {}
-
-    def guardar_momento(self, tipo: str, contenido: str, emocion: str):
-        """Guarda momentos importantes de la conversación"""
-        momento = {
-            "timestamp": datetime.now(),
-            "tipo": tipo,
-            "contenido": contenido,
-            "emocion": emocion,
-        }
-        self.momentos_especiales.append(momento)
-
-        # Mantener solo los últimos 50 momentos
-        if len(self.momentos_especiales) > 50:
-            self.momentos_especiales = self.momentos_especiales[-50:]
-
-    def recordar_contexto_similar(self, tema: str) -> Optional[str]:
-        """Busca recuerdos relacionados con el tema actual"""
-        for momento in reversed(self.momentos_especiales):
-            if tema.lower() in momento["contenido"].lower():
-                return f"¡Me acuerdo cuando hablamos de {tema}! {momento['contenido'][:50]}..."
-        return None
 
 
 class Lunita:
@@ -72,7 +43,9 @@ class Lunita:
         self.guardian = guardian.Guardian()
 
         # Nuevos componentes para mayor amistad
-        self.memoria = MemoriaAfectiva()
+        self.memoria = MemoriaAfectiva(
+            token=token, modelo="mistral-tiny-latest", max_recuerdos=50
+        )
         self.estado_conversacion = EstadoConversacion(
             temas_mencionados=[],
             preguntas_frecuentes={},
@@ -119,45 +92,50 @@ class Lunita:
         return contexto
 
     async def predecir(self, mensaje: str) -> str:
-        """Versión mejorada del método de predicción con más personalidad"""
-
-        # Validaciones básicas
-        if not self._validar_entrada(mensaje):
-            return self._respuesta_con_personalidad(MENSAJES_ERROR["mensaje_invalido"])
-
-        # Actualizar estado de conversación
-        self._actualizar_estado_conversacion(mensaje)
-
-        # Buscar en memoria afectiva
-        recuerdo = self.memoria.recordar_contexto_similar(mensaje)
+        # if not self._validar_entrada(mensaje):
+        #     return self._respuesta_con_personalidad(MENSAJES_ERROR["mensaje_invalido"])
 
         try:
-            # Añadir contexto de memoria si existe
-            mensaje_con_contexto = mensaje
-            if recuerdo and self.estado_conversacion.nivel_confianza > 30:
-                mensaje_con_contexto = f"{mensaje}\n[Recuerdo: {recuerdo}]"
-
-            respuesta = await self.cliente.preguntar(mensaje_con_contexto)
-
-            # Guardar momento importante
-            self.memoria.guardar_momento(
-                tipo="conversacion",
-                contenido=f"Usuario: {mensaje} | Lunita: {respuesta[:100]}",
-                emocion=self.emocion.obtener_emocion(),
+            # NUEVO: Buscar recuerdos relevantes con IA
+            recuerdos_relevantes = await self.memoria.buscar_recuerdos_relevantes(
+                mensaje,
+                limite=2,
+                usar_ia=True,  # Usa Ministral para búsqueda semántica
             )
 
-            # Aumentar confianza gradualmente
-            self._aumentar_confianza()
+            # Generar contexto desde recuerdos
+            contexto_memoria = self.memoria.generar_contexto_para_prompt(
+                recuerdos_relevantes
+            )
 
-            # Posibilidad de respuesta espontánea adicional
-            if randint(1, 100) <= 15:  # 15% de probabilidad
-                respuesta += f"\n\n{self._generar_comentario_espontaneo()}"
+            # Añadir al mensaje
+            mensaje_con_contexto = mensaje
+            if contexto_memoria:
+                mensaje_con_contexto = f"{mensaje}\n\n{contexto_memoria}"
+
+            # Obtener respuesta
+            respuesta = await self.cliente.preguntar(mensaje_con_contexto)
+
+            # NUEVO: Analizar y guardar con IA
+            await self.memoria.analizar_y_guardar(
+                usuario_msg=mensaje,
+                lunita_msg=respuesta,
+                emocion_lunita=self.emocion.obtener_emocion(),
+            )
 
             return respuesta
 
         except Exception as e:
-            logger.error(f"Error en Lunita.predecir: {e}")
+            logger.error(f"Error en predicción: {e}")
             return self._respuesta_con_personalidad(MENSAJES_ERROR["error_api"])
+
+    async def obtener_perfil_usuario(self) -> dict:
+        """NUEVO: Obtiene un perfil completo del usuario"""
+        return self.memoria.obtener_perfil_usuario()
+
+    async def cerrar(self):
+        """Cierra recursos de la memoria"""
+        await self.memoria.close()
 
     def _validar_entrada(self, mensaje: str) -> bool:
         """Validación mejorada de entrada"""
