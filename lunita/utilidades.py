@@ -1,4 +1,5 @@
 import json
+from importlib.resources import files
 
 
 class CargadorDatos:
@@ -35,6 +36,8 @@ class CargadorDatos:
             Puede lanzar `FileNotFoundError` si la ruta no es válida o `json.JSONDecodeError`
             si el archivo no contiene un JSON válido.
         """
-        with open(self.ruta, "r", encoding="utf-8") as f:
+        json_path = files("lunita").joinpath(self.ruta)
+
+        with json_path.open("r", encoding="utf-8") as f:
             datos = json.load(f)
         return datos

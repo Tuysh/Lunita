@@ -125,7 +125,7 @@ class Cliente:
     def _construir_prompt_sistema(self) -> str:
         """Construye el prompt del sistema con la emoción actual"""
         prompt = PROMPT_PERSONALIDAD
-        prompt += f"\n\nESTADO EMOCIONAL ACTUAL: {self.emocion}"
+        prompt += f"\n\nESTADO EMOCIONAL ACTUAL: \n{self.emocion}"
         prompt += "\nAdapta todas tus respuestas a este estado emocional de manera sutil pero perceptible."
 
         if self.instrucciones_adiccionales:
@@ -153,20 +153,17 @@ class Cliente:
         ERRORS
             Puede propagar errores del proveedor o de red durante la ejecución.
         """
-        historial_limitado = self._limitar_historial()
+        historial_limitado = (
+            self.historial[-AJUSTES_CONTEXTO["max_historial"] :]
+            if len(self.historial) > AJUSTES_CONTEXTO["max_historial"]
+            else self.historial
+        )
 
         r = await self.agente.run(mensaje, message_history=historial_limitado)
 
         self.historial.extend(r.new_messages())
 
         return r.output
-
-    def _limitar_historial(self) -> Optional[list[ModelMessage]]:
-        """Limita el historial al máximo configurado"""
-        max_historial = AJUSTES_CONTEXTO["max_historial"]
-        if len(self.historial) > max_historial:
-            return self.historial[-max_historial:]
-        return self.historial if self.historial else None
 
     def actualizar_emocion(self, nueva_emocion: str) -> None:
         """Actualiza la emoción y recrea el agente"""

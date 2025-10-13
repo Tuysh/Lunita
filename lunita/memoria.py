@@ -4,6 +4,8 @@ from datetime import datetime
 
 import httpx
 
+from .emocional import MotorEmocional
+
 logger = logging.getLogger(__name__)
 
 
@@ -75,7 +77,7 @@ Números relevantes:"""
             return ""
 
     async def analizar_y_guardar(
-        self, usuario_msg: str, lunita_msg: str, emocion_lunita: str
+        self, usuario_msg: str, lunita_msg: str, emocion_lunita: MotorEmocional
     ) -> dict:
         """
         Analiza la conversación con IA y guarda un recuerdo estructurado
@@ -101,7 +103,7 @@ Números relevantes:"""
                 "lunita": lunita_msg[:200],
             },
             "analisis": analisis,
-            "emocion_lunita": emocion_lunita,
+            "emocion_lunita": emocion_lunita.obtener_emocion,
             "relevancia": analisis.get("nivel_urgencia", 3) / 5.0,  # Normalizar a 0-1
             "veces_recordado": 0,
         }

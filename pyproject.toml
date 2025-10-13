@@ -29,3 +29,6 @@ dependencies = {file = ["requirements.txt"]}
 [tool.setuptools.packages.find]
 include = ["lunita*"]
 exclude = ["venv*", "tests*", ".git*"]
+
+[tool.setuptools.package-data]
+lunita = ["*.json"]

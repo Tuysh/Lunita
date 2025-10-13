@@ -49,32 +49,16 @@ OBJETIVO: Ser la amiga mágica que siempre está emocionada de hablar contigo y 
 CONFIG_API = {
     "referente": "lunita.me",
     "titulo": "Lunita - Tu Amiga Vidente",
-    "modelo": "mistral-small-latest"
+    "modelo": "mistral-small-latest",
 }
 
 AJUSTES_CONTEXTO = {
     "max_historial": 15,  # Aumentado para mejor memoria
-    "umbral_confianza": 50,  # Punto donde Lunita se vuelve más personal
-    "frecuencia_espontaneidad": 15,  # % de probabilidad de comentarios extras
-    "tiempo_conversacion_espontanea": 24  # horas para mensaje de regreso
 }
 
 MENSAJES_ERROR = {
     "mensaje_invalido": "¡Ups! Mis cristalitos están confundidos... ¿podrías decirlo de otra forma? ✨",
     "error_api": "¡Ay! Mi bola de cristal se empañó... ¡dale un momentito y vuelve a intentar! 🔮",
     "mensaje_muy_largo": "¡Woah! Es mucha información para mis bolitas de cristal... ¿puedes contármelo poquito a poquito? 🌟",
-    "sin_contenido": "¡Oye! No escuché nada... ¿se cortó la conexión cósmica? 🌙"
-}
-
-# Nuevas configuraciones para características sociales
-CONFIGURACION_SOCIAL = {
-    "temas_recordar": ["trabajo", "familia", "estudios", "mascotas", "hobby", "viajes"],
-    "momentos_importantes": ["logros", "problemas", "planes", "miedos", "alegrías"],
-    "niveles_confianza": {
-        0: "desconocido",
-        25: "conocido",
-        50: "amigo",
-        75: "amigo_cercano",
-        100: "mejor_amigo"
-    }
+    "sin_contenido": "¡Oye! No escuché nada... ¿se cortó la conexión cósmica? 🌙",
 }

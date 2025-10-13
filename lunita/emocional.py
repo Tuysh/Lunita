@@ -1,9 +1,15 @@
 import logging
 import random
+from typing import TypedDict
 
 from .utilidades import CargadorDatos
 
 logger = logging.getLogger(__name__)
+
+
+class EstadoEmocional(TypedDict):
+    situacion: str
+    emociones: list[str]
 
 
 class MotorEmocional(CargadorDatos):
@@ -44,7 +50,7 @@ class MotorEmocional(CargadorDatos):
             f"Motor emocional inicializado con emoción: {self.obtener_emocion()}"
         )
 
-    def obtener_emocion(self) -> str:
+    def obtener_emocion(self) -> EstadoEmocional:
         """Obtiene la emoción actual.
 
         RETURN VALUES
@@ -53,7 +59,22 @@ class MotorEmocional(CargadorDatos):
         """
         return self.cargar_datos()[self.emocion_actual]
 
-    def obtener_nueva_emocion(self) -> str:
+    def obtener_situacion(self) -> str:
+        return self.obtener_emocion()["situacion"]
+
+    def obtener_emociones(self) -> list[str]:
+        return self.obtener_emocion()["emociones"]
+
+    def obtener_para_prompt(self) -> str:
+        """Formato limpio para incluir en el system prompt"""
+        emociones_str = ", ".join(self.obtener_emociones())
+
+        return f"""Situación: {self.obtener_situacion()}
+Sentimientos: {emociones_str}
+
+Incorpora sutilmente esta situación en tu comportamiento cuando sea natural."""
+
+    def obtener_nueva_emocion(self) -> EstadoEmocional:
         """Selecciona y devuelve una nueva emoción aleatoria.
 
         SIDE EFFECTS
@@ -65,7 +86,10 @@ class MotorEmocional(CargadorDatos):
         """
         emociones = self.cargar_datos()
         if not emociones:
-            return "curiosa por los astros"
+            return {
+                "situacion": "curiosa por los astros",
+                "emociones": ["curiosidad", "asombro"],
+            }
 
         nueva_emocion = self.emocion_actual
         intentos = 0
@@ -82,7 +106,7 @@ class MotorEmocional(CargadorDatos):
         """Establece una emoción específica si existe en la lista"""
         emociones = self.cargar_datos()
         try:
-            indice = emociones.index(emocion) # type: ignore
+            indice = emociones.index(emocion)  # type: ignore
             self.emocion_actual = indice
             logger.info(f"Emoción cambiada a: {emocion}")
             return True
