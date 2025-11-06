@@ -7,14 +7,13 @@ from pydantic_ai.messages import ModelMessage
 from . import emocional, guardian
 from .cliente import Cliente
 from .configuracion import MENSAJES_ERROR
-from .memoria import MemoriaAfectiva
 
 logger = logging.getLogger(__name__)
 
 
 class Lunita:
     """
-    Asistente mágico y creativo con memoria afectiva
+    Asistente mágico y creativo
     """
 
     def __init__(
@@ -26,10 +25,7 @@ class Lunita:
     ) -> None:
         self.usuario = usuario
         self.emocion = emocional.MotorEmocional("json/emociones.json")
-        self.guardian = guardian.Guardian()
-        self.memoria = MemoriaAfectiva(
-            token=token, modelo="mistral-tiny-latest", max_recuerdos=50
-        )
+        self.guardian = guardian.Guardian(token=token)
 
         self.cliente = Cliente(
             token=token,
@@ -41,36 +37,13 @@ class Lunita:
 
     async def predecir(self, mensaje: str) -> str:
         """Genera una respuesta basada en el mensaje del usuario"""
-        if not self._validar_entrada(mensaje):
+        if not await self._validar_entrada(mensaje):
             return f"✨ {MENSAJES_ERROR['mensaje_invalido']} ✨"
 
         try:
-            # Buscar recuerdos relevantes con IA
-            recuerdos_relevantes = await self.memoria.buscar_recuerdos_relevantes(
-                mensaje,
-                limite=2,
-                usar_ia=True,
-            )
-
-            # Generar contexto desde recuerdos
-            contexto_memoria = self.memoria.generar_contexto_para_prompt(
-                recuerdos_relevantes
-            )
-
-            # Añadir contexto al mensaje si existe
-            mensaje_con_contexto = mensaje
-            if contexto_memoria:
-                mensaje_con_contexto = f"{mensaje}\n\n{contexto_memoria}"
 
             # Obtener respuesta
-            respuesta = await self.cliente.preguntar(mensaje_con_contexto)
-
-            # Analizar y guardar en memoria
-            await self.memoria.analizar_y_guardar(
-                usuario_msg=mensaje,
-                lunita_msg=respuesta,
-                emocion_lunita=self.emocion,
-            )
+            respuesta = await self.cliente.preguntar(mensaje)
 
             return respuesta
 
@@ -78,7 +51,7 @@ class Lunita:
             logger.error(f"Error en predicción: {e}")
             return f"✨ {MENSAJES_ERROR['error_api']} ✨"
 
-    def _validar_entrada(self, mensaje: str) -> bool:
+    async def _validar_entrada(self, mensaje: str) -> bool:
         """Validación de entrada del usuario"""
         if not mensaje or not isinstance(mensaje, str):
             return False
@@ -86,7 +59,7 @@ class Lunita:
         if len(mensaje.strip()) == 0:
             return False
 
-        return self.guardian.obtener_veredicto(mensaje=mensaje)
+        return await self.guardian.obtener_veredicto(mensaje=mensaje)
 
     def cambiar_humor(self) -> str:
         """Cambia la emoción actual de Lunita"""
@@ -101,13 +74,8 @@ class Lunita:
             "usuario": self.cliente.usuario,
             "emocion_actual": self.emocion.obtener_emocion(),
             "total_mensajes": len(self.cliente.historial),
-            "total_recuerdos": len(self.memoria.recuerdos),
             "timestamp": datetime.now().isoformat(),
         }
-
-    async def obtener_perfil_usuario(self) -> dict:
-        """Obtiene un perfil completo del usuario desde la memoria"""
-        return self.memoria.obtener_perfil_usuario()
 
     def exportar_historial(self) -> bytes:
         """Exporta el historial de conversación"""
@@ -117,6 +85,3 @@ class Lunita:
         """Importa un historial de conversación"""
         self.cliente.importar_json(datos)
 
-    async def cerrar(self):
-        """Cierra recursos de la memoria"""
-        await self.memoria.close()

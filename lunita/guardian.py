@@ -1,6 +1,6 @@
 import logging
 
-from spanlp.palabrota import Palabrota
+import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +20,25 @@ class Guardian:
         se espera que interactúe con una API de moderación.
     """
 
-    def __init__(self):
-        self.palabrota = Palabrota()
+    CATEGORIAS_BLOQUEADAS = {
+        "sexual",
+        "hate_and_discrimination",
+        "violence_and_threats",
+        "dangerous_and_criminal_content",
+        "selfharm",
+    }
 
-    def obtener_veredicto(self, mensaje: str) -> bool:
+    def __init__(self, token: str):
+        self.token = token
+        self.http_client = httpx.AsyncClient(
+            timeout=10.0,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {token}",
+            },
+        )
+
+    async def obtener_veredicto(self, mensaje: str) -> bool:
         """Determina si un mensaje es apropiado según las directrices.
 
         DESCRIPTION
@@ -44,12 +59,35 @@ class Guardian:
             if not mensaje or not isinstance(mensaje, str):
                 return False
 
-            es_apropiado = not self.palabrota.contains_palabrota(mensaje.strip())
+            response = await self.http_client.post(
+                "https://api.mistral.ai/v1/moderations",
+                json={"model": "mistral-moderation-latest", "input": [mensaje.strip()]},
+            )
 
-            if not es_apropiado:
-                logger.warning("Mensaje inapropiado detectado")
+            if response.status_code != 200:
+                logger.error(f"Error en API de moderación: {response.status_code}")
+                # En caso de error, ser conservador y rechazar
+                return False
 
-            return es_apropiado
+            data = response.json()
+
+            if not data.get("results"):
+                logger.warning("No se recibieron resultados de moderación")
+                return False
+
+            resultado = data["results"][0]
+            categorias = resultado.get("categories", {})
+
+            # Verificar si alguna categoría bloqueada está activa
+            for categoria in self.CATEGORIAS_BLOQUEADAS:
+                if categorias.get(categoria, False):
+                    logger.warning(
+                        f"Mensaje inapropiado detectado - Categoría: {categoria}"
+                    )
+                    return False
+
+            # Si no se activó ninguna categoría bloqueada, el mensaje es apropiado
+            return True
 
         except Exception as e:
             logger.error(f"Error en Guardian.obtener_veredicto: {e}")
