@@ -1,6 +1,6 @@
 # 🌙 Lunita Core
 
-El núcleo de un asistente de IA emocionalmente consciente con capacidades de memoria afectiva.
+El núcleo de un asistente de IA emocionalmente consciente.
 
 Lunita es un proyecto diseñado para ser un compañero emocional interactivo. Su propósito es comprender, procesar y responder a las emociones, actuando como un asistente digital amigable con memoria a largo plazo que aprende de cada conversación.
 
@@ -8,7 +8,6 @@ Lunita es un proyecto diseñado para ser un compañero emocional interactivo. Su
 
 *   **🧠 Análisis Emocional:** Motor emocional capaz de interpretar y clasificar emociones a partir de texto.
 *   **🛡️ Módulo Guardián:** Capa de seguridad y moderación en las interacciones usando SpanLP.
-*   **💭 Memoria Afectiva:** Sistema de memoria con búsqueda semántica mediante IA que permite recordar conversaciones previas.
 *   **🔮 Personalidad Dinámica:** Comportamiento proactivo con respuestas espontáneas y cambios de humor.
 *   **🎯 Herramientas Integradas:** Soporte para acciones como búsqueda web, generación de imágenes y más.
 *   **📊 Perfil de Usuario:** Construcción automática de perfil del usuario basado en las interacciones.
@@ -93,7 +92,6 @@ core/
 │   ├── cliente.py       # Cliente para la API de Mistral
 │   ├── emocional.py     # Motor de análisis emocional
 │   ├── guardian.py      # Módulo de moderación y seguridad
-│   ├── memoria.py       # Sistema de memoria afectiva
 │   ├── herramientas.py  # Definición de herramientas (búsqueda, etc.)
 │   ├── utilidades.py    # Funciones auxiliares
 │   ├── configuracion.py # Configuración y constantes

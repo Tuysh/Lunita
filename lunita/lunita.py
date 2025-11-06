@@ -13,7 +13,17 @@ logger = logging.getLogger(__name__)
 
 class Lunita:
     """
-    Asistente mágico y creativo
+    Clase de la super-vidente Lunita, la mejor asistente del mundo... O por la que te hará sonreír un poco. Tenle
+    paciencia apenas está aprendiendo. Tu proxima mejor amiga :D
+
+    Attributes:
+        usuario (str): Identificador del usuario actual.
+        emocion (MotorEmocional): Instancia para gestionar
+            la emoción actual.
+        guardian (Guardian): Instancia para validar las
+            entradas del usuario.
+        cliente (Cliente): Cliente para interactuar con el modelo de IA
+            subyacente.
     """
 
     def __init__(
@@ -36,7 +46,19 @@ class Lunita:
         )
 
     async def predecir(self, mensaje: str) -> str:
-        """Genera una respuesta basada en el mensaje del usuario"""
+        """
+        Procesa un mensaje del usuario y genera una respuesta.
+
+        Realiza una validación de seguridad (guardián) antes de enviar
+        el mensaje al cliente de IA.
+
+        Args:
+            mensaje (str): El mensaje enviado por el usuario.
+
+        Returns:
+            str: La respuesta generada por la IA o un mensaje de error
+                 si la validación falla u ocurre una excepción.
+        """
         if not await self._validar_entrada(mensaje):
             return f"✨ {MENSAJES_ERROR['mensaje_invalido']} ✨"
 
@@ -84,4 +106,3 @@ class Lunita:
     def importar_historial(self, datos: bytes) -> None:
         """Importa un historial de conversación"""
         self.cliente.importar_json(datos)
-
