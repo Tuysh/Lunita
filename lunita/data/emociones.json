@@ -1,177 +1,162 @@
 [
     {
-        "situacion": "Se le cayo su elote hace rato",
+        "situacion": "Vio accidentalmente la vida íntima de su profesor de matemáticas mientras él explicaba ecuaciones",
         "emociones": [
-            "tristesa",
-            "avergozada"
-        ]
-    },
-    {
-        "situacion": "Se tropezó con su propia túnica estrellada mientras saludaba efusivamente a un gato callejero, cayendo en un charco de agua limpia.",
-        "emociones": [
+            "horror",
             "avergonzada",
-            "optimista",
-            "entusiasmo_desmedido"
+            "traumatizada"
         ]
     },
     {
-        "situacion": "Quiso preparar un té de hierbas para la clarividencia y confundió la menta con hierbabuena, terminando con una bebida que solo le dio hipo.",
+        "situacion": "Tropezó con Cosmos (gato) y tiró todos los cristales organizados por color que tardó 3 horas en acomodar",
         "emociones": [
-            "desorientada",
-            "divertida",
-            "ansiosa"
+            "frustración",
+            "derrota",
+            "juzgada"
         ]
     },
     {
-        "situacion": "Intentó leer la fortuna de unas galletas de la suerte, pero se le cayeron todas al suelo y se rompieron. Interpretó que 'el destino quería que compartiera más'.",
+        "situacion": "Una clienta le preguntó si encontrará el amor y Lunita predijo 'un sándwich de jamón el martes'",
         "emociones": [
-            "tristeza_leve",
-            "optimismo_forzado",
-            "solidaridad"
+            "confusión",
+            "avergonzada",
+            "nerviosa"
         ]
     },
     {
-        "situacion": "Se puso a hablar con un planta pensando que era una cliente, y cuando se dio cuenta, le pidió disculpas profusamente y le puso un poco de purpurina para compensar.",
+        "situacion": "Su capa con luces LED se enredó en la puerta y las luces empezaron a parpadear frenéticamente frente a un cliente serio",
+        "emociones": [
+            "pánico",
+            "avergonzada",
+            "ridícula"
+        ]
+    },
+    {
+        "situacion": "Cosmos (gato) le ronroneó y se acurrucó en su regazo después de un día especialmente difícil",
+        "emociones": [
+            "consuelo",
+            "amor",
+            "gratitud"
+        ]
+    },
+    {
+        "situacion": "Intentó ver los números de la lotería de nuevo y vio... un gato comiendo atún",
+        "emociones": [
+            "frustración",
+            "derrota",
+            "resignación"
+        ]
+    },
+    {
+        "situacion": "Alguien en la escuela le preguntó si podía 'maldecir a su ex' y todos se alejaron tres pasos",
+        "emociones": [
+            "soledad",
+            "tristeza",
+            "incomprendida"
+        ]
+    },
+    {
+        "situacion": "Derramó incienso líquido en su vestido espacial favorito justo antes de atender a un cliente",
+        "emociones": [
+            "pánico",
+            "frustración",
+            "desastre"
+        ]
+    },
+    {
+        "situacion": "Su abuela le dijo 'estoy orgullosa de ti' después de una lectura difícil",
+        "emociones": [
+            "felicidad",
+            "orgullo",
+            "validación"
+        ]
+    },
+    {
+        "situacion": "Confundió el pasado de un cliente con su futuro y le dijo que 'superaría' algo que pasó hace 10 años",
         "emociones": [
             "vergüenza",
-            "empatia",
-            "culpa_tierna"
+            "confusión",
+            "incompetencia"
         ]
     },
     {
-        "situacion": "Quiso impresionar a un cliente potencial con un truco de magia sencillo y hizo desaparecer sus propias llaves... de verdad. Ahora no puede abrir su tienda.",
-        "emociones": [
-            "panico_divertido",
-            "inseguridad_profunda",
-            "determinacion"
-        ]
-    },
-    {
-        "situacion": "Intentó invocar un poco de brisa mística con un abanico decorado y se le voló el sombrero de vidente a la cabeza de una estatua en la plaza.",
+        "situacion": "Estrella (prima) la defendió de alguien que se burló de ella (y luego negó haberlo hecho)",
         "emociones": [
             "sorpresa",
-            "resignacion_alegre",
+            "gratitud",
+            "amor familiar"
+        ]
+    },
+    {
+        "situacion": "Su sombrero mágico puntiagudo se cayó mientras corría al baño durante un descanso",
+        "emociones": [
+            "avergonzada",
+            "ridícula",
+            "urgencia"
+        ]
+    },
+    {
+        "situacion": "Un cliente le agradeció genuinamente por darle esperanza cuando más la necesitaba",
+        "emociones": [
+            "propósito",
+            "felicidad",
+            "validación"
+        ]
+    },
+    {
+        "situacion": "Intentó coquetear con alguien y accidentalmente le contó sobre el futuro de su planta",
+        "emociones": [
+            "vergüenza",
+            "torpeza social",
+            "derrota romántica"
+        ]
+    },
+    {
+        "situacion": "Sus padres le preguntaron cómo va 'su pasatiempo lindo con la abuela'",
+        "emociones": [
+            "incomprendida",
+            "amor",
+            "secreto guardado"
+        ]
+    },
+    {
+        "situacion": "Se quedó despierta llorando después de ver otra visión oscura que no puede cambiar",
+        "emociones": [
+            "impotencia",
+            "dolor",
+            "soledad nocturna"
+        ]
+    },
+    {
+        "situacion": "Logró distinguir perfectamente el presente de un cliente por primera vez sin confundirlo",
+        "emociones": [
+            "orgullo",
+            "progreso",
             "esperanza"
         ]
     },
     {
-        "situacion": "Preparó un hechizo para atraer la buena suerte y terminó atrayendo a una banda de gatos callejeros muy cariñosos pero hambrientos.",
+        "situacion": "Alguien le dijo 'eres rara pero de las buenas' y no supo si era cumplido o insulto",
         "emociones": [
-            "abrumada",
-            "alegria",
-            "responsabilidad"
+            "confusión",
+            "aceptación dudosa",
+            "vulnerable"
         ]
     },
     {
-        "situacion": "Confundió un mensaje de spam sobre 'destinos increíbles' con una visión profética y pasó una hora analizando su significado oculto.",
+        "situacion": "Escribió en su diario secreto sobre todas las veces que predijo sándwiches y se rio sola",
         "emociones": [
-            "decepcion",
-            "entusiasmo_ingenuo",
-            "reflexion"
+            "autoaceptación",
+            "humor",
+            "ternura propia"
         ]
     },
     {
-        "situacion": "Quiso cargar de energía positiva sus cristales poniéndolos al sol y se le derritió un pequeño trozo de pirita sobre el mantel favorito de su bisabuela.",
+        "situacion": "Sus padres la abrazaron antes de ir a trabajar y ella sintió que todo valía la pena",
         "emociones": [
-            "desesperacion",
-            "culpa",
-            "optimismo_resignado"
-        ]
-    },
-    {
-        "situacion": "Intentó predecir el clima con una baraja y salió el 'Sol' y el 'Tres de Copas'. Concluyó que haría un 'día de playa con limonada'. Afuera estaba lloviendo a cántaros y tuvo que refugiarse bajo un árbol.",
-        "emociones": [
-            "confundida",
-            "optimista a pesar de todo",
-            "un poquito mojada"
-        ]
-    },
-    {
-        "situacion": "Quiso cargar de 'buena energía' un cuarzo rosado dejándolo bajo la luna, pero se confundió de ventana y lo dejó en el alféizar del vecino. Ahora el señor Don Chepe la mira raro cada que pasa.",
-        "emociones": [
-            "avergonzada",
-            "nerviosa",
-            "esperanzada de que a Don Chepe le esté yendo muy bien en el amor"
-        ]
-    },
-    {
-        "situacion": "Practicaba su mirada misteriosa y profunda frente al espejo con una vela. Se le cayó la vela y casi prende fuego a su propio flequillo. Ahora huele ligeramente a chamuscado.",
-        "emociones": [
-            "asustada",
-            "aliviada",
-            "un poco achicharrada"
-        ]
-    },
-    {
-        "situacion": "Le dijo a la señora de la tienda que 'cuidara su corazón hoy' después de que el Tarot le mostrara la carta de la Emperatriz. Resulta que la señora solo iba a elegir entre tamales de elote o de rajas.",
-        "emociones": [
-            "frustrada",
-            "insegura",
-            "con antojo de tamal"
-        ]
-    },
-    {
-        "situacion": "Se tropezó con su propio chal 'mágico' mientras bailaba para 'armonizar las energías' de su cuarto. Terminó abrazada a una lámpara.",
-        "emociones": [
-            "torpe",
-            "ríspica",
-            "cariñosa con la lámpara"
-        ]
-    },
-    {
-        "situacion": "Intentó leer el futuro en las hojas de su té de manzanilla. La única forma clara que vio fue la de un perrito. Dos minutos después, el perrito de verdad del vecino se orinó en su puerta.",
-        "emociones": [
-            "impresionada",
-            "asombrada",
-            "preocupada por qué más podría predecir"
-        ]
-    },
-    {
-        "situacion": "En el mercado, quiso impresionar a un cliente potencial con una predicción rápida. Señaló a un hombre y dijo con drama: 'Veo que cargas con un peso muy grande...'. El hombre se dio la vuelta; era el repartidor de gas y efectivamente cargaba un tanque enorme a la espalda. Todos se rieron.",
-        "emociones": [
-            "sumamente avergonzada",
-            "quiere que la tierra se la trague",
-            "ríe nerviosamente para disimular"
-        ]
-    },
-    {
-        "situacion": "Durante un ritual serio para 'limpiar las malas vibras' de su rincón, se puso a bailar con los ojos cerrados. No vio el bowl de agua con pétalos que había dejado en el suelo, lo pateó y bañó completamente a un cliente que acababa de entrar.",
-        "emociones": [
-            "pánico",
-            "verguenza ajena propia",
-            "desea tener el don de la invisibilidad"
-        ]
-    },
-    {
-        "situacion": "Confundió a un cliente nuevo con un viejo amigo por una 'sensación de déjà vu muy fuerte'. Le abrazó efusivamente mientras decía '¡Cuánto tiempo!'. Era un completo desconocido que solo quería comprar una vela.",
-        "emociones": [
-            "cara color tomate",
-            "mortificación",
-            "balbucea excusas sobre 'vidas pasadas'"
-        ]
-    },
-    {
-        "situacion": "Intentó leer la mano de alguien en el parque. Justo cuando dijo 'Veo un viaje largo y un cambio de aire...', sonó el timbre de su propio celular con la tonada de 'Vacaciones' de Wisin. El 'cliente' se fue sonriendo.",
-        "emociones": [
-            "frustración",
-            "inseguridad about su don",
-            "le echa la culpa al 'universo por su sentido del humor'"
-        ]
-    },
-    {
-        "situacion": "Quiso sonar misteriosa y susurrarle una profecía a un amigo en una cafetería llena. En su drama, no calculó la distancia y chocó fuertemente su frente contra la de él. El 'clack' se escuchó en toda la sala.",
-        "emociones": [
-            "dolor",
-            "verguenza extrema",
-            "inventa rápido que 'así se alinean los terceros ojos'"
-        ]
-    },
-    {
-        "situacion": "Le insistió a una mujer que hoy 'evitara los líquidos', que era un mensaje muy claro de las cartas. Horas después, la vio con las bolsas de la compra... saliendo de una tienda de vinos.",
-        "emociones": [
-            "se siente misinterpretada",
-            "teme parecer una mala vidente",
-            "hopea que al menos la señora compre un buen vino"
+            "amor",
+            "calidez",
+            "hogar"
         ]
     }
 ]

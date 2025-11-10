@@ -30,19 +30,19 @@ class Lunita:
         self,
         token: str,
         usuario: str,
-        basic: Optional[bool] = False,
+        advanced_mode: bool = False,
         historial: Optional[list[ModelMessage]] = None,
         instrucciones_adicionales: Optional[str] = None,
     ) -> None:
         self.usuario = usuario
         self.emocion = emocional.MotorEmocional("data/emociones.json")
         self.cliente = Cliente(
+            advanced_mode=advanced_mode,
             token=token,
             usuario=usuario,
             emocion=self.emocion.obtener_para_prompt(),
             instrucciones_adiccionales=instrucciones_adicionales,
             historial=historial,
-            basic=basic,
         )
 
     async def predecir(self, mensaje: str) -> str:

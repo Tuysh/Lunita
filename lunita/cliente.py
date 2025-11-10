@@ -52,9 +52,9 @@ class Cliente:
         token: str,
         usuario: str,
         emocion: str,
+        advanced_mode: bool,
         instrucciones_adiccionales: Optional[str] = None,
         historial: Optional[list[ModelMessage]] = None,
-        basic: Optional[bool] = False,
     ) -> None:
         """Inicializa la instancia del cliente.
 
@@ -84,7 +84,7 @@ class Cliente:
         self.emocion = emocion
         self.instrucciones_adiccionales = instrucciones_adiccionales
         self.historial: list[ModelMessage] = historial or []
-        self.basic = basic
+        self.advanced_mode = advanced_mode
         self.agente = self._crear_agente()
 
     def _crear_agente(self) -> Agent:
@@ -131,14 +131,18 @@ class Cliente:
 
     def _construir_prompt_sistema(self) -> str:
         """Construye el prompt del sistema con la emoción actual"""
-        prompt = PROMPT_PERSONALIDAD if not self.basic else PROMPT_FASH
-        prompt += f"\n\nESTADO EMOCIONAL ACTUAL: \n{self.emocion}"
-        prompt += "\nAdapta todas tus respuestas a este estado emocional de manera sutil pero perceptible."
+        prompt = PROMPT_PERSONALIDAD if self.advanced_mode else PROMPT_FASH
+        prompt += f"\nESTADO EMOCIONAL ACTUAL: {self.emocion}"
+        prompt += "Adapta todas tus respuestas a este estado emocional de manera sutil pero perceptible."
 
         if self.instrucciones_adiccionales:
             prompt += (
-                f"\n\nINSTRUCCIONES ADICIONALES: {self.instrucciones_adiccionales}"
+                f"\nINSTRUCCIONES ADICIONALES: {self.instrucciones_adiccionales}"
             )
+
+        print(  # Debugging output
+            f"[DEBUG] Prompt del sistema construido:\n{prompt}\n{'-'*40}"
+        )
 
         return prompt
 

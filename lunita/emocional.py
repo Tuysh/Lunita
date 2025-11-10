@@ -71,8 +71,7 @@ class MotorEmocional(CargadorDatos):
 
         return f"""Situación: {self.obtener_situacion()}
 Sentimientos: {emociones_str}
-
-Incorpora sutilmente esta situación en tu comportamiento cuando sea natural."""
+"""
 
     def obtener_nueva_emocion(self) -> EstadoEmocional:
         """Selecciona y devuelve una nueva emoción aleatoria.
