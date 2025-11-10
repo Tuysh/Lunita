@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional
 
 from pydantic_ai.messages import ModelMessage
 
-from . import emocional, guardian
+from . import emocional
 from .cliente import Cliente
 from .configuracion import MENSAJES_ERROR
 
@@ -36,8 +36,6 @@ class Lunita:
     ) -> None:
         self.usuario = usuario
         self.emocion = emocional.MotorEmocional("json/emociones.json")
-        self.guardian = guardian.Guardian(token=token)
-
         self.cliente = Cliente(
             token=token,
             usuario=usuario,
@@ -61,11 +59,8 @@ class Lunita:
             str: La respuesta generada por la IA o un mensaje de error
                  si la validación falla u ocurre una excepción.
         """
-        # if not await self._validar_entrada(mensaje):
-        #     return f"✨ {MENSAJES_ERROR['mensaje_invalido']} ✨"
 
         try:
-            # Obtener respuesta
             respuesta = await self.cliente.preguntar(mensaje)
 
             return respuesta
@@ -73,16 +68,6 @@ class Lunita:
         except Exception as e:
             logger.error(f"Error en predicción: {e}")
             return f"✨ {MENSAJES_ERROR['error_api']} ✨"
-
-    async def _validar_entrada(self, mensaje: str) -> bool:
-        """Validación de entrada del usuario"""
-        if not mensaje or not isinstance(mensaje, str):
-            return False
-
-        if len(mensaje.strip()) == 0:
-            return False
-
-        return await self.guardian.obtener_veredicto(mensaje=mensaje)
 
     def cambiar_humor(self) -> str:
         """Cambia la emoción actual de Lunita"""

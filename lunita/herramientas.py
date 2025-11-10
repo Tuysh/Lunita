@@ -24,7 +24,7 @@ def tarot() -> list[str]:
     cd = CargadorDatos(ruta="json/cartas.json")
     cartas = cd.cargar_datos()
 
-    return sample(cartas, 3) # type: ignore
+    return sample(cartas, 3)  # type: ignore
 
 
 HERRAMIENTAS = [tarot, obtener_signo_zodiacal]
