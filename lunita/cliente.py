@@ -7,7 +7,12 @@ from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.mistral import MistralModel
 from pydantic_ai.providers.mistral import MistralProvider
 
-from .configuracion import AJUSTES_CONTEXTO, CONFIG_API, PROMPT_PERSONALIDAD
+from .configuracion import (
+    AJUSTES_CONTEXTO,
+    CONFIG_API,
+    PROMPT_PERSONALIDAD,
+    PROMPT_FASH,
+)
 from .herramientas import HERRAMIENTAS
 
 AdaptadorMensajes = TypeAdapter(list[ModelMessage])
@@ -49,6 +54,7 @@ class Cliente:
         emocion: str,
         instrucciones_adiccionales: Optional[str] = None,
         historial: Optional[list[ModelMessage]] = None,
+        basic: Optional[bool] = False,
     ) -> None:
         """Inicializa la instancia del cliente.
 
@@ -78,6 +84,7 @@ class Cliente:
         self.emocion = emocion
         self.instrucciones_adiccionales = instrucciones_adiccionales
         self.historial: list[ModelMessage] = historial or []
+        self.basic = basic
         self.agente = self._crear_agente()
 
     def _crear_agente(self) -> Agent:
@@ -124,7 +131,7 @@ class Cliente:
 
     def _construir_prompt_sistema(self) -> str:
         """Construye el prompt del sistema con la emoción actual"""
-        prompt = PROMPT_PERSONALIDAD
+        prompt = PROMPT_PERSONALIDAD if not self.basic else PROMPT_FASH
         prompt += f"\n\nESTADO EMOCIONAL ACTUAL: \n{self.emocion}"
         prompt += "\nAdapta todas tus respuestas a este estado emocional de manera sutil pero perceptible."
 

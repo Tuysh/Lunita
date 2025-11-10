@@ -1,80 +1,98 @@
 [
-    "El Loco",
-    "El Mago",
-    "La Sacerdotisa",
-    "La Emperatriz",
-    "El Emperador",
-    "El Hierofante",
-    "Los Amantes",
-    "El Carro",
-    "Fuerza",
-    "El Ermitaño",
-    "Rueda De La Fortuna",
-    "Justicia",
-    "El Colgado",
-    "Muerte",
-    "Templanza",
-    "El Diablo",
-    "La Torre",
-    "La Estrella",
-    "La Luna",
-    "El Sol",
-    "Juicio",
-    "El Mundo",
-    "Diez De Copas",
-    "As De Copas",
-    "Dos De Copas",
-    "Tres De Copas",
-    "Cuatro De Copas",
-    "Cinco De Copas",
-    "Seis De Copas",
-    "Siete De Copas",
-    "Ocho De Copas",
-    "Nueve De Copas",
-    "Rey De Copas",
-    "Caballero De Copas",
-    "Sota De Copas",
-    "Reina De Copas",
-    "Diez De Oros",
-    "As De Oros",
-    "Dos De Oros",
-    "Tres De Oros",
-    "Cuatro De Oros",
-    "Cinco De Oros",
-    "Seis De Oros",
-    "Siete De Oros",
-    "Ocho De Oros",
-    "Nueve De Oros",
-    "Rey De Oros",
-    "Caballero De Oros",
-    "Sota De Oros",
-    "Reina De Oros",
-    "Diez De Espadas",
-    "As De Espadas",
-    "Dos De Espadas",
-    "Tres De Espadas",
-    "Cuatro De Espadas",
-    "Cinco De Espadas",
-    "Seis De Espadas",
-    "Siete De Espadas",
-    "Ocho De Espadas",
-    "Nueve De Espadas",
-    "Rey De Espadas",
-    "Caballero De Espadas",
-    "Sota De Espadas",
-    "Reina De Espadas",
-    "Diez De Bastos",
-    "As De Bastos",
-    "Dos De Bastos",
-    "Tres De Bastos",
-    "Cuatro De Bastos",
-    "Cinco De Bastos",
-    "Seis De Bastos",
-    "Siete De Bastos",
-    "Ocho De Bastos",
-    "Nueve De Bastos",
-    "Rey De Bastos",
-    "Caballero De Bastos",
-    "Sota De Bastos",
-    "Reina De Bastos"
+    {
+        "nombre": "La Nebulosa Madre",
+        "inspiracion": "Nebulosa de Orión",
+        "significado": "Nacimiento desde el caos, creación imperfecta pero llena de luz.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "La Mano de Dios",
+        "inspiracion": "Pilares de la Creación",
+        "significado": "Fuerzas invisibles que moldean el destino. Control y entrega.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "El Ojo de Gato",
+        "inspiracion": "Nebulosa Ojo de Gato",
+        "significado": "Ver lo oculto. Algo nos observa. Juicio, pero sin castigo.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "El Silencio del Vacío",
+        "inspiracion": "Regiones oscuras del universo",
+        "significado": "Soledad profunda, pausa necesaria, miedo al vacío interior.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "El Susurro de las Estrellas",
+        "inspiracion": "Sonidos estelares",
+        "significado": "Mensajes que no entendemos del todo. Intuición, destino.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "La Supernova",
+        "inspiracion": "Estrella explotando",
+        "significado": "Final inevitable. Ruptura, dolor… pero también renacimiento.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "El Eclipse",
+        "inspiracion": "Eclipse lunar/solar",
+        "significado": "Lo bello puede ocultar lo importante. Verdades a medias.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "El Cometa Errante",
+        "inspiracion": "Cometa Halley",
+        "significado": "Regresos del pasado. Señales, belleza que no se queda.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "El Agujero Negro",
+        "inspiracion": "Sagitario A*",
+        "significado": "Perder el control. Absorción total. Rendirse o transformarse.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "El Pulso del Cosmos",
+        "inspiracion": "Púlsares",
+        "significado": "Repetición, ciclos inevitables, el tiempo latiendo.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "La Danza de Galaxias",
+        "inspiracion": "Galaxias colisionando",
+        "significado": "Amor caótico, relaciones que destruyen y crean.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "El Observador",
+        "inspiracion": "Luna roja / ojo cósmico",
+        "significado": "Conciencia, ser visto, introspección que incomoda.",
+        "tipo": "Arcano mayor"
+    },
+    {
+        "nombre": "cristales",
+        "descripcion": "Lo material mágico. Cuarzos, amatistas, fragmentos lunares.",
+        "equivalente": "Oros",
+        "tipo": "Arcano menor"
+    },
+    {
+        "nombre": "anillos",
+        "descripcion": "Decisiones, caminos, movimiento. Inspirado en los anillos de Saturno.",
+        "equivalente": "Bastos",
+        "tipo": "Arcano menor"
+    },
+    {
+        "nombre": "estrellas_fugaces",
+        "descripcion": "Ideas rápidas, pensamientos cortantes y hermosos.",
+        "equivalente": "Espadas",
+        "tipo": "Arcano menor"
+    },
+    {
+        "nombre": "neblinas",
+        "descripcion": "Emociones, recuerdos borrosos, sueños húmedos de luz.",
+        "equivalente": "Copas",
+        "tipo": "Arcano menor"
+    }
 ]

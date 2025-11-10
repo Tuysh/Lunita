@@ -30,6 +30,7 @@ class Lunita:
         self,
         token: str,
         usuario: str,
+        basic: Optional[bool] = False,
         historial: Optional[list[ModelMessage]] = None,
         instrucciones_adicionales: Optional[str] = None,
     ) -> None:
@@ -43,6 +44,7 @@ class Lunita:
             emocion=self.emocion.obtener_para_prompt(),
             instrucciones_adiccionales=instrucciones_adicionales,
             historial=historial,
+            basic=basic,
         )
 
     async def predecir(self, mensaje: str) -> str:
@@ -59,11 +61,10 @@ class Lunita:
             str: La respuesta generada por la IA o un mensaje de error
                  si la validación falla u ocurre una excepción.
         """
-        if not await self._validar_entrada(mensaje):
-            return f"✨ {MENSAJES_ERROR['mensaje_invalido']} ✨"
+        # if not await self._validar_entrada(mensaje):
+        #     return f"✨ {MENSAJES_ERROR['mensaje_invalido']} ✨"
 
         try:
-
             # Obtener respuesta
             respuesta = await self.cliente.preguntar(mensaje)
 
