@@ -35,7 +35,7 @@ class Lunita:
         instrucciones_adicionales: Optional[str] = None,
     ) -> None:
         self.usuario = usuario
-        self.emocion = emocional.MotorEmocional("json/emociones.json")
+        self.emocion = emocional.MotorEmocional("data/emociones.json")
         self.cliente = Cliente(
             token=token,
             usuario=usuario,

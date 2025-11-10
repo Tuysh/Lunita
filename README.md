@@ -95,7 +95,7 @@ core/
 │   ├── herramientas.py  # Definición de herramientas (búsqueda, etc.)
 │   ├── utilidades.py    # Funciones auxiliares
 │   ├── configuracion.py # Configuración y constantes
-│   └── json/            # Archivos de datos
+│   └── data/            # Archivos de datos
 │       ├── emociones.json
 │       └── respuestas_espontaneas.json
 ├── ejemplo.py           # Ejemplo de uso
