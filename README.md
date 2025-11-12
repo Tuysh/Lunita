@@ -15,74 +15,98 @@ Lunita es un proyecto diseñado para ser un compañero emocional interactivo. Su
 
 ## 🚀 Instalación
 
-### Como Paquete (Recomendado)
+### Como paquete (recomendado)
 
 ```bash
 pip install git+https://github.com/CualliLabs/Lunita.git
 ```
 
-### Desde el Código Fuente
+### Desde el código fuente
 
-1.  **Clona el repositorio:**
-    ```bash
-    git clone https://github.com/CualliLabs/Lunita.git
-    cd Lunita/core
-    ```
+1. Clona el repositorio:
 
-2.  **Crea y activa un entorno virtual:**
-    ```bash
-    # Para Windows
-    python -m venv venv
-    .\venv\Scripts\activate
+```bash
+git clone https://github.com/CualliLabs/Lunita.git
+cd Lunita
+```
 
-    # Para macOS/Linux
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
+2. Crea y activa un entorno virtual:
 
-3.  **Instala las dependencias:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+```powershell
+# Windows (PowerShell)
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 
-4.  **Configura tus variables de entorno:**
+# macOS / Linux
+python3 -m venv venv
+source venv/bin/activate
+```
 
-    Crea un archivo `.env` con tu token de Mistral AI:
-    ```
-    MISTRAL_API_KEY=tu_token_aqui
-    ```
+3. Instala las dependencias:
 
-## 💻 Uso Básico
+```powershell
+pip install -r requirements.txt
+```
+
+4. Configura tus variables de entorno:
+
+Crea un archivo `.env` en la raíz del proyecto y define tu token del proveedor Mistral. El código actual espera la variable `MINISTRAL_TOKEN`:
+
+```
+MINISTRAL_TOKEN=tu_token_aqui
+```
+
+## 💻 Ejemplo de uso (actualizado)
+
+El paquete expone la clase `Lunita` en `lunita`. La API principal es asíncrona: `predecir(mensaje: str) -> str`.
+
+Aquí tienes un ejemplo mínimo que coincide con `ejemplo.py` incluido en el repositorio. Usa `python`/`PowerShell` para ejecutarlo después de configurar `.env`.
 
 ```python
 import asyncio
+import os
+from dotenv import load_dotenv
+
 from lunita import Lunita
 
+load_dotenv()
+
+TOKEN = os.getenv("MINISTRAL_TOKEN")
+if not TOKEN:
+    raise RuntimeError("La variable MINISTRAL_TOKEN no está definida en el entorno.")
+
+
 async def main():
-    # Inicializar Lunita
-    lunita = Lunita(
-        token="tu_token_mistral",
-        usuario="nombre_usuario"
-    )
+    # Crear la instancia de Lunita
+    lunita = Lunita(token=TOKEN, usuario="user_1")
 
-    # Conversar con Lunita
-    respuesta = await lunita.predecir("¡Hola! ¿Cómo estás?")
-    print(respuesta)
+    try:
+        while True:
+            pregunta = input("Pregunta (o 'exit' para salir): ")
+            if pregunta.strip().lower() == "exit":
+                break
 
-    # Obtener estado emocional
-    estado = lunita.obtener_estado_detallado()
-    print(f"Emoción actual: {estado['emocion_actual']}")
+            respuesta = await lunita.predecir(pregunta)
+            print("\nRespuesta:\n", respuesta)
 
-    # Cerrar recursos
-    await lunita.cerrar()
+            # Ejemplo de uso de utilidades disponibles
+            estado = lunita.obtener_estado()
+            print(f"Emoción actual: {estado['emocion_actual']} — total mensajes: {estado['total_mensajes']}")
+
+    finally:
+        # Lunita no expone un "cerrar" global; si usas el cliente directamente asegúrate
+        # de cerrar recursos HTTP si los expones (httpx.AsyncClient). En la versión
+        # actual, no es necesario llamar a `cerrar()`.
+        pass
+
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Ver [ejemplo.py](ejemplo.py) para un ejemplo más completo.
+También puedes revisar `ejemplo.py` en la raíz del proyecto para una versión idéntica del bucle interactivo.
 
-## 📂 Estructura del Proyecto
+## 📂 Estructura del proyecto
 
 ```
 core/
@@ -91,14 +115,14 @@ core/
 │   ├── lunita.py        # Clase principal del asistente
 │   ├── cliente.py       # Cliente para la API de Mistral
 │   ├── emocional.py     # Motor de análisis emocional
-│   ├── guardian.py      # Módulo de moderación y seguridad
 │   ├── herramientas.py  # Definición de herramientas (búsqueda, etc.)
 │   ├── utilidades.py    # Funciones auxiliares
 │   ├── configuracion.py # Configuración y constantes
 │   └── data/            # Archivos de datos
+│       ├── cartas.json
 │       ├── emociones.json
-│       └── respuestas_espontaneas.json
-├── ejemplo.py           # Ejemplo de uso
+│       └── signos.json
+├── ejemplo.py           # Ejemplo de uso (interactivo)
 ├── pyproject.toml       # Configuración del paquete
 ├── requirements.txt     # Dependencias del proyecto
 ├── MANIFEST.in          # Archivos adicionales para la distribución
@@ -108,6 +132,11 @@ core/
 
 ## 🔧 Tecnologías
 
+- **[Pydantic AI](https://ai.pydantic.dev/)**: Framework para aplicaciones de IA con validación de tipos
+- **[Mistral AI](https://mistral.ai/)**: Modelo de lenguaje principal
+- **[SpanLP](https://spanlp.readthedocs.io/)**: Análisis de lenguaje natural para moderación
+- **[httpx](https://www.python-httpx.org/)**: Cliente HTTP asíncrono
+- **Python 3.8+**: Lenguaje de programación
 - **[Pydantic AI](https://ai.pydantic.dev/)**: Framework para aplicaciones de IA con validación de tipos
 - **[Mistral AI](https://mistral.ai/)**: Modelo de lenguaje principal
 - **[SpanLP](https://spanlp.readthedocs.io/)**: Análisis de lenguaje natural para moderación
