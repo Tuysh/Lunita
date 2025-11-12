@@ -10,8 +10,8 @@ from pydantic_ai.providers.mistral import MistralProvider
 from .configuracion import (
     AJUSTES_CONTEXTO,
     CONFIG_API,
-    PROMPT_PERSONALIDAD,
     PROMPT_FASH,
+    PROMPT_PERSONALIDAD,
 )
 from .herramientas import HERRAMIENTAS
 
@@ -136,13 +136,7 @@ class Cliente:
         prompt += "Adapta todas tus respuestas a este estado emocional de manera sutil pero perceptible."
 
         if self.instrucciones_adiccionales:
-            prompt += (
-                f"\nINSTRUCCIONES ADICIONALES: {self.instrucciones_adiccionales}"
-            )
-
-        print(  # Debugging output
-            f"[DEBUG] Prompt del sistema construido:\n{prompt}\n{'-'*40}"
-        )
+            prompt += f"\nINSTRUCCIONES ADICIONALES: {self.instrucciones_adiccionales}"
 
         return prompt
 
