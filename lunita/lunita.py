@@ -1,4 +1,5 @@
 import logging
+import random
 from datetime import datetime
 from typing import Any, Dict, Optional
 
@@ -61,6 +62,12 @@ class Lunita:
         """
 
         try:
+            # Probabilidad de cambiar de emoción del 15%
+            if random.random() < 0.15:
+                self.emocion.obtener_nueva_emocion()
+                self.cliente.actualizar_emocion(self.emocion.obtener_para_prompt())
+
+            # Enviar el mensaje al cliente de IA (Saludos Lunita!)
             respuesta = await self.cliente.preguntar(mensaje)
 
             return respuesta
@@ -70,14 +77,25 @@ class Lunita:
             return f"✨ {MENSAJES_ERROR['error_api']} ✨"
 
     def cambiar_humor(self) -> str:
-        """Cambia la emoción actual de Lunita"""
+        """
+        Cambia la emoción actual de Lunita. Todos podemos cambiar de humor incluso Lunita.
+
+        Returns:
+            str: La nueva emoción actual después del cambio.
+        """
         self.emocion.obtener_nueva_emocion()
         self.cliente.actualizar_emocion(self.emocion.obtener_para_prompt())
         logger.info(f"Cambio emocional a: {self.emocion.obtener_emocion()}")
         return str(self.emocion.obtener_emocion())
 
     def obtener_estado(self) -> Dict[str, Any]:
-        """Obtiene el estado actual de Lunita"""
+        """
+        Obtiene el estado actual de Lunita
+
+        Returns:
+            Dict[str, Any]: Un diccionario que contiene el usuario, la emoción actual,
+                el total de mensajes y la marca de tiempo.
+        """
         return {
             "usuario": self.cliente.usuario,
             "emocion_actual": self.emocion.obtener_emocion(),
@@ -86,9 +104,22 @@ class Lunita:
         }
 
     def exportar_historial(self) -> bytes:
-        """Exporta el historial de conversación"""
+        """
+        Exporta el historial de conversación, dudo que lo uses pero bueno.
+
+        Returns:
+            bytes: Datos del historial en formato JSON.
+        """
         return self.cliente.exportar_json()
 
     def importar_historial(self, datos: bytes) -> None:
-        """Importa un historial de conversación"""
+        """
+        Importa un historial de conversación
+
+        Args:
+            datos (bytes): Datos del historial en formato JSON.
+
+        Returns:
+            None
+        """
         self.cliente.importar_json(datos)
