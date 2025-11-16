@@ -1,4 +1,4 @@
-from typing import Type, TypeVar
+from typing import Type, TypeVar, Any, overload
 
 import httpx
 from pydantic_ai.models.mistral import MistralModel
@@ -6,9 +6,11 @@ from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.mistral import MistralProvider
 from pydantic_ai.providers.openrouter import OpenRouterProvider
 
+
 from .configuracion import AJUSTES_MODELO, CONFIG_API
 
 T = TypeVar("T")
+M = TypeVar("M")
 
 
 def obtener_proveedor_generico(
@@ -43,7 +45,19 @@ def obtener_proveedor_generico(
     return proveedor_tipo(api_key=token, http_client=http_client)  # type: ignore
 
 
-def obtener_modelo_generico(proveedor: T, modelo_tipo: Type[T]) -> T:
+@overload
+def obtener_modelo_generico(
+    proveedor: MistralProvider, modelo_tipo: type[MistralModel]
+) -> MistralModel: ...
+
+
+@overload
+def obtener_modelo_generico(
+    proveedor: OpenRouterProvider, modelo_tipo: type[OpenAIChatModel]
+) -> OpenAIChatModel: ...
+
+
+def obtener_modelo_generico(proveedor: Any, modelo_tipo: Any) -> Any:
     """
     NAME
         obtener_modelo_generico - Crea una instancia genérica de modelo.
@@ -71,10 +85,10 @@ def obtener_modelo_generico(proveedor: T, modelo_tipo: Type[T]) -> T:
         `pydantic_ai.models`.
     """
     return modelo_tipo(
-        model_name=CONFIG_API["modelo"],  # pyright: ignore[reportCallIssue]
-        provider=proveedor,  # pyright: ignore[reportCallIssue]
-        settings=AJUSTES_MODELO,  # pyright: ignore[reportCallIssue]
-    )  # type: ignore
+        model_name=CONFIG_API["modelo"],
+        provider=proveedor,
+        settings=AJUSTES_MODELO,
+    )
 
 
 def configurar_modelo(
@@ -88,4 +102,4 @@ def configurar_modelo(
         modelo = obtener_modelo_generico(proveedor, OpenAIChatModel)
     else:
         raise ValueError(f"Tipo de modelo no soportado: {tipo_modelo}")
-    return modelo  # type: ignore
+    return modelo
