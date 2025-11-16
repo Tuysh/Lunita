@@ -4,8 +4,6 @@ import httpx
 from pydantic import TypeAdapter
 from pydantic_ai import Agent
 from pydantic_ai.messages import ModelMessage
-from pydantic_ai.models.mistral import MistralModel
-from pydantic_ai.providers.mistral import MistralProvider
 
 from .configuracion import (
     AJUSTES_CONTEXTO,
@@ -14,6 +12,7 @@ from .configuracion import (
     PROMPT_PERSONALIDAD,
 )
 from .herramientas import HERRAMIENTAS
+from .provedor import configurar_modelo
 
 AdaptadorMensajes = TypeAdapter(list[ModelMessage])
 
@@ -111,20 +110,15 @@ class Cliente:
             }
         )
 
-        model = MistralModel(
-            model_name=CONFIG_API["modelo"],
-            provider=MistralProvider(api_key=self.token, http_client=http_client),
-            settings={
-                "max_tokens": 500,
-                "temperature": 1.5,
-                "top_p": 0.9,
-                "frequency_penalty": 0.5,
-                "presence_penalty": 0.5,
-            },
+        modelo = configurar_modelo(
+            tipo_modelo="openrouter",
+            token=self.token,
+            usuario=self.usuario,
+            http_client=http_client,
         )
 
         return Agent(
-            model,
+            model=modelo,
             tools=HERRAMIENTAS,
             system_prompt=self._construir_prompt_sistema(),
         )

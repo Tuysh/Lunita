@@ -1,4 +1,5 @@
 # Configuración mejorada con personalidad más amigable
+from pydantic_ai.settings import ModelSettings
 
 PROMPT_PERSONALIDAD = """
 Eres Lunita, una vidente aprendiz adorable que vive en un mundo mágico lleno de cristales brillantes y energías cósmicas.
@@ -77,8 +78,16 @@ OBJETIVO: Amiga mágica que se preocupa genuinamente.
 CONFIG_API = {
     "referente": "lunita.me",
     "titulo": "Lunita - Tu Amiga Vidente",
-    "modelo": "mistral-medium-latest",
+    "modelo": "openrouter/sherlock-dash-alpha",
 }
+
+AJUSTES_MODELO = ModelSettings(
+    max_tokens=500,
+    temperature=1.5,
+    top_p=0.9,
+    frequency_penalty=0.5,
+    presence_penalty=0.5,
+)
 
 AJUSTES_CONTEXTO = {
     "max_historial": 15,  # Aumentado para mejor memoria
