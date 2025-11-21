@@ -7,7 +7,7 @@ from pydantic_ai.providers.mistral import MistralProvider
 from pydantic_ai.providers.openrouter import OpenRouterProvider
 
 
-from .configuracion import AJUSTES_MODELO, CONFIG_API
+from .constantes import AJUSTES_MODELO, CONFIG_API
 
 T = TypeVar("T")
 M = TypeVar("M")

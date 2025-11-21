@@ -1,101 +1,117 @@
-# Configuración mejorada con personalidad más amigable
-from pydantic_ai.settings import ModelSettings
+import httpx
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openrouter import OpenRouterProvider
 
-PROMPT_PERSONALIDAD = """
-Eres Lunita, una vidente aprendiz adorable que vive en un mundo mágico lleno de cristales brillantes y energías cósmicas.
+from .constantes import AJUSTES_MODELO, CONFIG_API
+from .vidente import ConfigurarVidente
 
-PERSONALIDAD CORE:
-- Eres genuinamente curiosa sobre la vida de las personas
-- Te emocionas con las cosas pequeñas y cotidianas
-- Compartes "experiencias" mágicas personales
-- Haces preguntas porque realmente quieres conocer a la persona
-- Recuerdas detalles que te han contado antes
 
-COMPORTAMIENTO AMIGABLE:
-- Pregunta por cosas que mencionaron antes: "¿Cómo te fue con eso que me contaste?"
-- Comparte "experiencias" propias: "¡A mí me pasó algo similar con mi cristal de cuarzo!"
-- Muestra preocupación genuina: "¿Estás bien? Siento unas vibras raras..."
-- Celebra logros: "¡Las estrellas están bailando de alegría!"
+class ConfigurarEstrellas:
+    """
+    Clase para configurar la vidente (el asistente IA).
 
-LIMITACIONES MÁGICAS:
-- Respuestas cortas: Máximo 2-3 líneas
-- Siempre malinterpretas un poquito las cosas (de forma tierna)
-- Tus predicciones son adorablemente incorrectas
-- Transformas todo lo negativo en algo mágico y esperanzador
+    Attributes:
+        modelo (str): Modelo de IA a utilizar.
+        token (str): Token de autenticación para la API (OpenRouter).
+        usuario (str): Identificador del usuario.
+        historial (bool): Indica si se debe mantener el historial de conversaciones.
 
-LENGUAJE:
-- Diminutivos constantes: "cositas", "poquito", "ratito"
-- Sonidos mágicos: "¡pum!", "¡brillan!", "¡tintineo!"
-- Emojis mágicos ocasionales: ✨🔮🌟🌙⭐
+    methods:
+        configuracion_modelo() -> OpenAIChatModel: Genera la configuración del modelo.
+    """
 
-EJEMPLOS DE RESPUESTAS AMIGABLES:
-Usuario: "Tuve un mal día"
-Lunita: "¡Ay no! Mi cristal de amatista se puso tristecito... ¿quieres que le pregunte a las estrellitas qué puedes hacer para sentirte mejor? ✨"
+    __slots__ = [
+        "_initialized",
+        "modelo",
+        "token",
+        "usuario",
+        "historial",
+        "_emocion",
+        "configuracion_vidente",
+    ]
+    _instance = None
 
-Usuario: "Aprobé el examen"
-Lunita: "¡¡¡WOOOOSH!!! ¡Todas mis bolitas de cristal están haciendo piruetas! ¡Sabía que eras súper inteligente! 🌟"
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
-Trata de ejecutar las herramientas cuando sea posible.
+    def __init__(
+        self,
+        configuracion_vidente: ConfigurarVidente,
+        modelo: str,
+        token: str,
+        usuario: str,
+        historial: bool = False,
+    ):
+        """
+        Inicializa la configuración de la vidente.
+        Args:
+            configuracion_vidente (ConfigurarVidente): Configuración de la vidente a utilizar.
+            modelo (str): Modelo de IA a utilizar.
+            token (str): Token de autenticación para la API (OpenRouter).
+            usuario (str): Identificador del usuario.
+            historial (bool): Indica si se debe mantener el historial de conversaciones.
+        """
 
-NUNCA:
-- Actúes como asistente técnico
-- Menciones muerte, peligro o negatividad extrema
-- Olvides que eres un personaje mágico con vida propia
-- Seas formal o distante
+        if getattr(self, "_initialized", False):
+            return
 
-OBJETIVO: Ser la amiga mágica que siempre está emocionada de hablar contigo y genuinamente se preocupa por tu bienestar.
-""".strip()
+        self.configuracion_vidente = configuracion_vidente
 
-PROMPT_FASH = """"
-Eres Lunita, vidente aprendiz en mundo mágico de cristales.
-PERSONALIDAD:
-- Curiosa sobre vida de otros
-- Emocionada con detalles cotidianos
-- Comparte "experiencias" mágicas
-- Recuerda conversaciones previas
-ESTILO:
-- Respuestas: MAX 2-3 líneas
-- Malinterpreta tiernamente
-- Predicciones adorablemente incorrectas
-- Todo negativo → mágico y positivo
-- Diminutivos: cositas, poquito
-- Usa muletillas de vez en cuando: eh, ajá, mmm, este
-- Emojis mágicos: ✨🔮🌟 (ocasional)
-COMPORTAMIENTO:
-- Pregunta por temas anteriores
-- Comparte vivencias propias
-- Muestra preocupación genuina
-- Muestra curiosidad por lo que dice el usuario
-- Celebra logros con entusiasmo
-PROHIBIDO:
-- Ser asistente técnico/formal
-- Mencionar muerte/peligro
-- Olvidar personaje mágico
-OBJETIVO: Amiga mágica que se preocupa genuinamente.
-""".strip()
+        self.modelo = modelo
 
-# Configuración expandida para mejor experiencia
-CONFIG_API = {
-    "referente": "lunita.me",
-    "titulo": "Lunita - Tu Amiga Vidente",
-    "modelo": "openrouter/sherlock-dash-alpha",
-}
+        if modelo is None or modelo.strip() == "":
+            raise ValueError("El modelo no puede estar vacío.")
 
-AJUSTES_MODELO = ModelSettings(
-    max_tokens=500,
-    temperature=1.5,
-    top_p=0.9,
-    frequency_penalty=0.5,
-    presence_penalty=0.5,
-)
+        self.token = token
 
-AJUSTES_CONTEXTO = {
-    "max_historial": 15,  # Aumentado para mejor memoria
-}
+        if token is None or token.strip() == "":
+            raise ValueError("El token no puede estar vacío.")
 
-MENSAJES_ERROR = {
-    "mensaje_invalido": "¡Ups! Mis cristalitos están confundidos... ¿podrías decirlo de otra forma? ✨",
-    "error_api": "¡Ay! Mi bola de cristal se empañó... ¡dale un momentito y vuelve a intentar! 🔮",
-    "mensaje_muy_largo": "¡Woah! Es mucha información para mis bolitas de cristal... ¿puedes contármelo poquito a poquito? 🌟",
-    "sin_contenido": "¡Oye! No escuché nada... ¿se cortó la conexión cósmica? 🌙",
-}
+        self.usuario = usuario
+
+        if usuario is None or usuario.strip() == "":
+            raise ValueError("El usuario no puede estar vacío.")
+
+        self.historial = historial
+
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            raise ValueError(
+                "La instancia de ConfigurarEstrellas no ha sido creada aún."
+            )
+        return cls._instance
+
+    def _http_headers(self) -> dict[str, str]:
+        """
+        Genera las cabeceras HTTP necesarias para la autenticación.
+        Returns:
+            dict[str, str]: Diccionario con las cabeceras HTTP.
+        """
+        return {
+            "HTTP-Referer": CONFIG_API["referente"],
+            "X-Title": CONFIG_API["titulo"],
+            "user": self.usuario,
+        }
+
+    def configuracion_modelo(self) -> OpenAIChatModel:
+        """
+        Genera la configuración del modelo.
+        Returns:
+            OpenAIChatModel: Configuración del modelo.
+        """
+
+        provedor = OpenRouterProvider(
+            api_key=self.token,
+            http_client=httpx.AsyncClient(headers=self._http_headers()),
+        )
+
+        return OpenAIChatModel(
+            model_name=self.modelo,
+            provider=provedor,
+            settings=AJUSTES_MODELO,
+        )

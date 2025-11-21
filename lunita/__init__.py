@@ -10,6 +10,8 @@ DESCRIPTION
     principal del paquete, permitiendo su importación directa desde `lunita`.
 """
 
-from .lunita import Lunita
+from .sesion import Sesion
+from .configuracion import ConfigurarEstrellas
+from .vidente import ConfigurarVidente
 
-__all__ = ["Lunita"]
+__all__ = ["Sesion", "ConfigurarEstrellas", "ConfigurarVidente"]
