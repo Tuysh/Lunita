@@ -1,91 +1,94 @@
-# 🌙 Lunita
+# 🌙 Lunita SDK
 
-> Un asistente de IA emocionalmente consciente
+> Tu amiga vidente y asistente emocionalmente consciente.
 
-Lunita es un compañero digital que comprende y responde a las emociones.
-## Características
+Lunita no es solo un chatbot; es una compañera digital con "sentimientos". Su estado emocional cambia dinámicamente según la conversación, afectando sus respuestas y personalidad. Vive en un mundo mágico, lee el tarot y siempre busca hacerte sonreír.
 
-- **🔮 Personalidad Dinámica** — Respuestas espontáneas y cambios de humor
-- **🎯 Herramientas Integradas** — Lectura de tarot, signos de zodiaco
-- **⚡ API Moderna** — Construida con Pydantic AI y Mistral AI
+## ✨ Características
 
-## Instalación
+- **🔮 Personalidad Dinámica** — Sus emociones cambian y afectan sus respuestas.
+- **🎯 Herramientas Mágicas** — Lectura de tarot y horóscopos integrados.
+- **⚡ Tecnología Moderna** — Construida sobre Pydantic AI y modelos LLM avanzados.
 
-**Como paquete (recomendado):**
+## 🚀 Instalación
 
-```bash
-pip install git+https://github.com/CualliLabs/Lunita.git
-```
+1. Clona el repositorio y entra en la carpeta:
+   ```bash
+   git clone https://github.com/CualliLabs/Lunita.git
+   cd Lunita
+   ```
 
-**Desde el código fuente:**
+2. Crea un entorno virtual e instala las dependencias:
+   ```bash
+   python -m venv venv
+   # Windows
+   .\venv\Scripts\Activate.ps1
+   # Linux/Mac
+   source venv/bin/activate
 
-```bash
-git clone https://github.com/CualliLabs/Lunita.git
-cd Lunita
-python -m venv venv
-source venv/bin/activate  # En Windows: .\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-```
+   pip install -r requirements.txt
+   ```
 
-**Configuración:**
+3. Configura tu entorno:
+   Crea un archivo `.env` (o configura variables de entorno) con tu token de API (OpenRouter):
+   ```env
+   LUNITA_TOKEN=tu_token_aqui
+   ```
 
-Crea un archivo `.env` con tu token de Mistral:
+## 🔮 Uso Básico
 
-```env
-MINISTRAL_TOKEN=tu_token_aqui
-```
-
-## Uso
+El nuevo SDK de Lunita está diseñado para ser intuitivo y flexible. Aquí tienes un ejemplo completo:
 
 ```python
 import asyncio
 import os
-from dotenv import load_dotenv
-from lunita import Lunita
-
-load_dotenv()
+from lunita import ConfigurarVidente, ConfigurarEstrellas, Sesion
 
 async def main():
-    lunita = Lunita(token=os.getenv("MINISTRAL_TOKEN"), usuario="user_1")
+    # 1. Configura la personalidad de tu vidente
+    vidente = ConfigurarVidente(vidente="lunita")
 
-    while True:
-        pregunta = input("Tú: ")
-        if pregunta.lower() == "exit":
-            break
+    # 2. Conecta con las estrellas (Configuración de API)
+    estrellas = ConfigurarEstrellas(
+        usuario="user_1",
+        modelo="x-ai/grok-4.1-fast",
+        api_token=os.getenv("LUNITA_TOKEN"),
+        configuracion_vidente=vidente,
+        historial=True
+    )
 
-        respuesta = await lunita.predecir(pregunta)
-        print(f"\nLunita: {respuesta}\n")
+    # 3. Inicia la sesión mágica
+    sesion = Sesion()
 
-        estado = lunita.obtener_estado()
-        print(f"Emoción: {estado['emocion_actual']}\n")
+    # 4. ¡Interactúa!
+    print("✨ Iniciando sesión con Lunita...")
+    respuesta = await sesion.predecir("Hola Lunita, ¿qué dicen las cartas hoy?")
+
+    print(f"\nLunita: {respuesta.text}")
+
+    # 5. Consultar historial
+    historial = sesion.consultas()
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-## Estructura
+## 🧩 Estructura del Proyecto
 
-```
-lunita/
-├── lunita.py          # Clase principal
-├── cliente.py         # Cliente Mistral AI
-├── emocional.py       # Motor emocional
-├── herramientas.py    # Herramientas integradas
-├── utilidades.py      # Funciones auxiliares
-├── configuracion.py   # Configuración
-└── data/              # Datos de emociones y personalidad
-```
+El núcleo de Lunita se organiza de la siguiente manera:
 
-## Tecnologías
+- **`lunita/vidente.py`**: Configuración de la personalidad y prompts del sistema.
+- **`lunita/estrellas.py`**: Configuración de la infraestructura, API y parámetros técnicos.
+- **`lunita/sesion.py`**: Gestión de la interacción, estado emocional y ciclo de vida de la conversación.
+- **`lunita/emocional.py`**: Motor de emociones que simula estados de ánimo.
+- **`lunita/herramientas.py`**: Implementación de herramientas mágicas (tarot, signos).
 
-- **[Pydantic AI](https://ai.pydantic.dev/)** — Framework de IA con validación de tipos
-- **[Mistral AI](https://mistral.ai/)** — Modelo de lenguaje
-- **Python 3.8+**
+## 🛠 Tecnologías
 
-## Licencia
-
-MIT — Consulta el archivo `LICENSE` para más detalles.
+- **[Pydantic AI](https://ai.pydantic.dev/)**: Validación robusta y estructura de agentes.
+- **OpenRouter**: Modelos de lenguaje subyacentes.
+- **Python 3.10+**: Desarrollado para entornos modernos.
 
 ---
 
-Hecho con ❤️ por **Cualli Labs**
+Hecho con ❤️
