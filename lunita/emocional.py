@@ -1,92 +1,105 @@
+import functools
 import logging
 import random
-from typing import TypedDict
+
+from sentiment_analysis_spanish import sentiment_analysis
 
 from .utilidades import CargadorDatos
 
 logger = logging.getLogger(__name__)
 
 
-class EstadoEmocional(TypedDict):
-    situacion: str
-    emociones: list[str]
-
-
 class MotorEmocional(CargadorDatos):
-    """
-    NAME
-        MotorEmocional - Gestiona el estado emocional de Lunita.
-
-    SYNOPSIS
-        - me = MotorEmocional(ruta)
-        - me.obtener_emocion() -> str
-        - me.obtener_nueva_emocion() -> str
-
-    DESCRIPTION
-        Hereda de `CargadorDatos` para cargar una lista de emociones desde un archivo
-        JSON y proporciona métodos para obtener una emoción aleatoria, ya sea la
-        actual o una nueva.
-
-    ATTRIBUTES
-        emocion_actual : int
-            Índice numérico que representa la emoción actual en la lista de emociones.
-    """
-
     def __init__(self, ruta: str) -> None:
-        """Inicializa el motor emocional.
-
-        DESCRIPTION
-            Llama al constructor de la clase base con la ruta del archivo y establece
-            un estado de ánimo inicial seleccionando un índice aleatorio de la lista
-            de emociones cargada.
-
-        PARAMETERS
-            ruta
-                Ruta al archivo JSON que contiene la lista de emociones.
-        """
         super().__init__(ruta=ruta)
-        self.emocion_actual = random.randint(0, len(self.cargar_datos()) - 1)
-        logger.info(
-            f"Motor emocional inicializado con emoción: {self.obtener_emocion()}"
-        )
 
-    def obtener_emocion(self) -> EstadoEmocional:
-        """Obtiene la emoción actual.
+        self.emocion_actual: int = random.randint(0, len(self._cargar_emociones()) - 1)
 
-        RETURN VALUES
-            str
-                La cadena de texto que representa la emoción actual.
+        try:
+            self.analizador = sentiment_analysis.SentimentAnalysisSpanish()
+            logger.info("🔮 Cerebro emocional de Lunita activado correctamente")
+        except Exception as e:
+            logger.error(f"No se pudo cargar el analizador de sentimientos: {e}")
+            self.analizador = None
+
+    def analizar_vibe_usuario(self, mensaje: str) -> bool:
         """
-        return self.cargar_datos()[self.emocion_actual]
-
-    def obtener_situacion(self) -> str:
-        return self.obtener_emocion()["situacion"]
-
-    def obtener_emociones(self) -> list[str]:
-        return self.obtener_emocion()["emociones"]
-
-    def obtener_para_prompt(self) -> str:
-        """Formato limpio para incluir en el system prompt"""
-        emociones_str = ", ".join(self.obtener_emociones())
-
-        return f"""Situación: {self.obtener_situacion()}
-Sentimientos: {emociones_str}
-"""
-
-    def obtener_nueva_emocion(self) -> EstadoEmocional:
-        """Selecciona y devuelve una nueva emoción aleatoria.
-
-        SIDE EFFECTS
-            Modifica el atributo `self.emocion_actual` a un nuevo valor aleatorio.
-
-        RETURN VALUES
-            str
-                La cadena de texto de la nueva emoción seleccionada.
+        Analiza el sentimiento del usuario y cambia la emoción de Lunita si es intenso.
+        Retorna True si hubo un cambio forzado de emoción.
         """
-        emociones = self.cargar_datos()
+        if not self.analizador or not mensaje.strip():
+            return False
+
+        puntaje = self.analizador.sentiment(mensaje)
+        logger.debug(f"Vibe usuario: {puntaje:.3f}")
+
+        # Umbrales más suaves y configurables
+        if puntaje > 0.75:
+            return self._cambiar_por_valencia(min_valencia=0.6)
+        elif puntaje < 0.25:
+            return self._cambiar_por_valencia(max_valencia=-0.5)
+
+        return False
+
+    def _cambiar_por_valencia(self, min_valencia=None, max_valencia=None) -> bool:
+        candidatos = []
+        data = self._cargar_emociones()
+
+        for i, estado in enumerate(data):
+            val = estado.get("valencia", 0)
+            if min_valencia and val < min_valencia:
+                continue
+            if max_valencia and val > max_valencia:
+                continue
+            candidatos.append(i)
+
+        if candidatos:
+            self.emocion_actual = random.choice(candidatos)
+
+            logger.info(
+                f"Emoción forzada por valencia → {data[self.emocion_actual]['nombre']}"
+            )
+            return True
+        return False
+
+    @functools.lru_cache()
+    def _cargar_emociones(self):
+        cargador_datos = CargadorDatos("data/emociones.json")
+        return cargador_datos.cargar_datos()
+
+    def _buscar_y_establecer(self, keywords: list[str]) -> bool:
+        """Busca un estado que contenga alguna de las emociones dadas"""
+        emociones_data = self.cargar_datos()
+        candidatos = []
+
+        for i, estado in enumerate(emociones_data):
+            # Verificamos si alguna emoción del estado coincide con las keywords
+            if any(k in estado["emociones"] for k in keywords):
+                candidatos.append(i)
+
+        if candidatos:
+            self.emocion_actual = random.choice(candidatos)
+            nuevo_estado = self.obtener_estado_actual()
+            logger.info(
+                f"Emoción cambiada por reacción al usuario: {nuevo_estado['emociones']}"
+            )
+            return True
+        return False
+
+    def obtener_estado_actual(self):
+        return self._cargar_emociones()[self.emocion_actual]
+
+    def obtener_estado_actual_prompt(self) -> str:
+        estado = self.obtener_estado_actual()
+        emociones_str = ", ".join(estado["emociones"])
+        return f"Emociones actuales: {emociones_str}"
+
+    def obtener_nueva_emocion_al_azar(self):
+        """Selecciona y devuelve una nueva emoción aleatoria."""
+        emociones = self._cargar_emociones()
         if not emociones:
             return {
-                "situacion": "curiosa por los astros",
+                "nombre": "curiosa por los astros",
                 "emociones": ["curiosidad", "asombro"],
             }
 
@@ -97,18 +110,5 @@ Sentimientos: {emociones_str}
             intentos += 1
 
         self.emocion_actual = nueva_emocion
-        emocion_texto = self.obtener_emocion()
-        logger.info(f"Emoción cambiada a: {emocion_texto}")
+        emocion_texto = self.obtener_estado_actual()
         return emocion_texto
-
-    def establecer_emocion_especifica(self, emocion: str) -> bool:
-        """Establece una emoción específica si existe en la lista"""
-        emociones = self.cargar_datos()
-        try:
-            indice = emociones.index(emocion)  # type: ignore
-            self.emocion_actual = indice
-            logger.info(f"Emoción cambiada a: {emocion}")
-            return True
-        except ValueError:
-            logger.error(f"Emoción {emocion} no encontrada")
-            return False
