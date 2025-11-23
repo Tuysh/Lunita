@@ -73,16 +73,6 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-## 🧩 Estructura del Proyecto
-
-El núcleo de Lunita se organiza de la siguiente manera:
-
-- **`lunita/vidente.py`**: Configuración de la personalidad y prompts del sistema.
-- **`lunita/estrellas.py`**: Configuración de la infraestructura, API y parámetros técnicos.
-- **`lunita/sesion.py`**: Gestión de la interacción, estado emocional y ciclo de vida de la conversación.
-- **`lunita/emocional.py`**: Motor de emociones que simula estados de ánimo.
-- **`lunita/herramientas.py`**: Implementación de herramientas mágicas (tarot, signos).
-
 ## 🛠 Tecnologías
 
 - **[Pydantic AI](https://ai.pydantic.dev/)**: Validación robusta y estructura de agentes.
