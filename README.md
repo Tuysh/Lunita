@@ -49,7 +49,7 @@ async def main():
     vidente = ConfigurarVidente(vidente="lunita")
 
     # 2. Conecta con las estrellas (Configuración de API)
-    estrellas = ConfigurarEstrellas(
+    ConfigurarEstrellas(
         usuario="user_1",
         modelo="x-ai/grok-4.1-fast",
         api_token=os.getenv("LUNITA_TOKEN"),
