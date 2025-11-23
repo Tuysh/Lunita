@@ -1,9 +1,11 @@
+import functools
 from bisect import bisect_right
 from random import sample
 
 from .utilidades import CargadorDatos
 
 
+@functools.lru_cache()
 def obtener_signo_zodiacal(dia: int, mes: int) -> dict[str, str]:
     """
     Determina el signo zodiacal basado en la fecha de nacimiento.
@@ -17,6 +19,7 @@ def obtener_signo_zodiacal(dia: int, mes: int) -> dict[str, str]:
     return signos[index] if index >= 0 else signos[-1]
 
 
+@functools.lru_cache()
 def tarot() -> list[str]:
     """
     Selecciona tres cartas del tarot de manera aleatoria para una tirada básica.
