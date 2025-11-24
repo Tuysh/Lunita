@@ -1,37 +1,48 @@
-import functools
-import logging
 import random
 
 from sentiment_analysis_spanish import sentiment_analysis
 
 from .utilidades import CargadorDatos
 
-logger = logging.getLogger(__name__)
-
 
 class MotorEmocional(CargadorDatos):
+    """Motor para gestionar las emociones de Lunita
+
+    Clase que maneja el estado emocional de Lunita, permitiendo analizar el sentimiento
+    de los mensajes del usuario y ajustar las emociones en consecuencia.
+
+    Attributes:
+        emocion_actual (int): Índice del estado emocional actual.
+    """
+
     def __init__(self, ruta: str) -> None:
         super().__init__(ruta=ruta)
 
-        self.emocion_actual: int = random.randint(0, len(self._cargar_emociones()) - 1)
+        self._emociones = self.cargar_datos()
+        self.emocion_actual: int = random.randint(0, len(self._emociones) - 1)
 
         try:
             self.analizador = sentiment_analysis.SentimentAnalysisSpanish()
-            logger.info("🔮 Cerebro emocional de Lunita activado correctamente")
         except Exception as e:
-            logger.error(f"No se pudo cargar el analizador de sentimientos: {e}")
-            self.analizador = None
+            raise RuntimeError(
+                "No se pudo inicializar el analizador de sentimientos."
+            ) from e
 
-    def analizar_vibe_usuario(self, mensaje: str) -> bool:
+    def analizar_vibra_usuario(self, mensaje: str) -> bool:
+        """Analiza el mensaje del usuario para detectar las emociones
+
+        Funciona utilizando análisis de sentimiento para determinar si el mensaje
+        tiene una vibra positiva o negativa, y ajusta la emoción actual en consecuencia.
+        Args:
+            mensaje (str): Mensaje del usuario a analizar.
+
+        Returns:
+            bool: Indica si hubo un cambio forzado de emoción.
         """
-        Analiza el sentimiento del usuario y cambia la emoción de Lunita si es intenso.
-        Retorna True si hubo un cambio forzado de emoción.
-        """
-        if not self.analizador or not mensaje.strip():
+        if not mensaje.strip():
             return False
 
         puntaje = self.analizador.sentiment(mensaje)
-        logger.debug(f"Vibe usuario: {puntaje:.3f}")
 
         # Umbrales más suaves y configurables
         if puntaje > 0.75:
@@ -43,7 +54,7 @@ class MotorEmocional(CargadorDatos):
 
     def _cambiar_por_valencia(self, min_valencia=None, max_valencia=None) -> bool:
         candidatos = []
-        data = self._cargar_emociones()
+        data = self._emociones
 
         for i, estado in enumerate(data):
             val = estado.get("valencia", 0)
@@ -56,38 +67,14 @@ class MotorEmocional(CargadorDatos):
         if candidatos:
             self.emocion_actual = random.choice(candidatos)
 
-            logger.info(
-                f"Emoción forzada por valencia → {data[self.emocion_actual]['nombre']}"
-            )
-            return True
-        return False
-
-    @functools.lru_cache()
-    def _cargar_emociones(self):
-        cargador_datos = CargadorDatos("data/emociones.json")
-        return cargador_datos.cargar_datos()
-
-    def _buscar_y_establecer(self, keywords: list[str]) -> bool:
-        """Busca un estado que contenga alguna de las emociones dadas"""
-        emociones_data = self.cargar_datos()
-        candidatos = []
-
-        for i, estado in enumerate(emociones_data):
-            # Verificamos si alguna emoción del estado coincide con las keywords
-            if any(k in estado["emociones"] for k in keywords):
-                candidatos.append(i)
-
-        if candidatos:
-            self.emocion_actual = random.choice(candidatos)
-            nuevo_estado = self.obtener_estado_actual()
-            logger.info(
-                f"Emoción cambiada por reacción al usuario: {nuevo_estado['emociones']}"
+            print(
+                f"Cambiando emoción a {self.obtener_estado_actual()['nombre']} por valencia."
             )
             return True
         return False
 
     def obtener_estado_actual(self):
-        return self._cargar_emociones()[self.emocion_actual]
+        return self._emociones[self.emocion_actual]
 
     def obtener_estado_actual_prompt(self) -> str:
         estado = self.obtener_estado_actual()
@@ -96,7 +83,7 @@ class MotorEmocional(CargadorDatos):
 
     def obtener_nueva_emocion_al_azar(self):
         """Selecciona y devuelve una nueva emoción aleatoria."""
-        emociones = self._cargar_emociones()
+        emociones = self._emociones
         if not emociones:
             return {
                 "nombre": "curiosa por los astros",

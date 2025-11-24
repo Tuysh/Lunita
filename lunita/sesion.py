@@ -40,7 +40,7 @@ class Sesion:
         elif self.configuracion.configuracion_vidente.vidente == "estrella":
             self._recuerdo = MemoriaDia("data/recuerdos_estrella.json")
 
-        self._emociones = MotorEmocional("data/emociones_lunita.json")
+        self._emociones = MotorEmocional("data/emociones.json")
 
         self._cliente = Cliente(
             emocion=self._recuerdo.obtener_para_prompt(),
@@ -59,17 +59,18 @@ class Sesion:
             Un diccionario que contiene la respuesta de la IA, el modelo utilizado y la fecha de la respuesta.
         """
 
-        cambio_forzado = self._emociones.analizar_vibe_usuario(pregunta)
+        cambio_forzado = self._emociones.analizar_vibra_usuario(pregunta)
 
         if not cambio_forzado and random.random() < 0.15:
             self._emociones.obtener_nueva_emocion_al_azar()
 
-        prompt_emociones = f"{self._recuerdo.obtener_recuerdo_completo()}\nEMOCIONES ACTUALES: {self._emociones.obtener_estado_actual_prompt()}"
+        nueva_instruccion = f"(Tu estado emocional cambio a: {self._emociones.obtener_estado_actual()['nombre']})\n"
 
+        prompt_emociones = f"{self._recuerdo.obtener_recuerdo_completo()}\nEMOCIONES ACTUALES (Ajusta tus respuestas a esta emociones a tus respuestas): {self._emociones.obtener_estado_actual_prompt()}"
         self._cliente.actualizar_emocion(prompt_emociones)
 
         return {
-            "texto": await self._cliente.preguntar(pregunta),
+            "texto": await self._cliente.preguntar(nueva_instruccion + pregunta),
             "modelo": self.configuracion.modelo,
             "fecha": datetime.now(),
         }

@@ -36,8 +36,7 @@ class Cliente:
             if self.configuracion.configuracion_vidente.vidente == "lunita"
             else PROMPT_ESTRELLA
         )
-        prompt += f"\nESTADO EMOCIONAL ACTUAL: {self.emocion} Adapta todas tus respuestas a este estado emocional de manera sutil pero perceptible."
-
+        prompt += f"\n{self.emocion} Adapta todas tus respuestas a este estado emocional de manera sutil pero perceptible."
         return prompt
 
     async def preguntar(self, mensaje: str) -> str:
