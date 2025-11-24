@@ -21,6 +21,16 @@ class ConsultasSesion(TypedDict):
 
 
 class Sesion:
+    """Gestiona la sesión de interacción con la IA, incluyendo el estado emocional y el historial de consultas.
+
+    Esta clase encapsula la lógica para manejar la conversación con la IA, incluyendo la gestión del estado emocional
+    a través del motor emocional, la memoria diaria y la configuración del cliente.
+
+    Atributes
+        configuracion: ConfigurarEstrellas
+            Instancia de configuración para la sesión.
+    """
+
     def __init__(self):
         self.configuracion = ConfigurarEstrellas.get_instance()
         self._consultas: list[ConsultasSesion] = []
@@ -32,13 +42,21 @@ class Sesion:
 
         self._emociones = MotorEmocional("data/emociones_lunita.json")
 
-        self.cliente = Cliente(
+        self._cliente = Cliente(
             emocion=self._recuerdo.obtener_para_prompt(),
         )
 
     async def predecir(self, pregunta: str) -> RespuestaSesion:
-        """
-        Simula una pregunta a la sesión de IA.
+        """Realiza una predicción basada en la pregunta del usuario
+
+        Realiza una consulta al cliente de IA, actualizando el estado emocional según la "vibe" del usuario
+        y el recuerdo diario.
+
+        Args:
+            pregunta: La pregunta o mensaje del usuario.
+
+        Returns:
+            Un diccionario que contiene la respuesta de la IA, el modelo utilizado y la fecha de la respuesta.
         """
 
         cambio_forzado = self._emociones.analizar_vibe_usuario(pregunta)
@@ -46,17 +64,12 @@ class Sesion:
         if not cambio_forzado and random.random() < 0.15:
             self._emociones.obtener_nueva_emocion_al_azar()
 
-        print(
-            f"[DEBUG] Emoción actual después de analizar: {self._emociones.obtener_estado_actual()}"
-        )
-
         prompt_emociones = f"{self._recuerdo.obtener_recuerdo_completo()}\nEMOCIONES ACTUALES: {self._emociones.obtener_estado_actual_prompt()}"
 
-        # 3. Actualizamos el prompt del sistema con la emoción final
-        self.cliente.actualizar_emocion(prompt_emociones)
+        self._cliente.actualizar_emocion(prompt_emociones)
 
         return {
-            "texto": await self.cliente.preguntar(pregunta),
+            "texto": await self._cliente.preguntar(pregunta),
             "modelo": self.configuracion.modelo,
             "fecha": datetime.now(),
         }
@@ -66,21 +79,25 @@ class Sesion:
         Cambia la emoción actual de la vidente. Todos podemos cambiar de humor incluso Lunita.
 
         Returns:
-            str: La nueva emoción actual después del cambio.
+            La nueva emoción actual después del cambio.
         """
         self._emociones.obtener_nueva_emocion_al_azar()
         return str(self._emociones.obtener_estado_actual())
 
     @property
     def consultas(self):
-        """
-        Obtiene el historial de consultas realizadas.
+        """Obtiene el historial de consultas realizadas.
+
+        Returns:
+            Lista de consultas realizadas en la sesión.
         """
         return self._consultas
 
     @consultas.setter
     def consultas(self, valor):
-        """
-        Establece un historial previo de consultas.
+        """Establece un historial previo de consultas.
+
+        Args:
+            valor: Lista de consultas para establecer como historial.
         """
         self._consultas = valor
