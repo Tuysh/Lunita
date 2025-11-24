@@ -1,6 +1,6 @@
 import random
 
-from sentiment_analysis_spanish import sentiment_analysis
+from pysentimiento import create_analyzer
 
 from .utilidades import CargadorDatos
 
@@ -22,32 +22,21 @@ class MotorEmocional(CargadorDatos):
         self.emocion_actual: int = random.randint(0, len(self._emociones) - 1)
 
         try:
-            self.analizador = sentiment_analysis.SentimentAnalysisSpanish()
+            self.analizador = create_analyzer(task="sentiment", lang="es")
         except Exception as e:
             raise RuntimeError(
                 "No se pudo inicializar el analizador de sentimientos."
             ) from e
 
     def analizar_vibra_usuario(self, mensaje: str) -> bool:
-        """Analiza el mensaje del usuario para detectar las emociones
-
-        Funciona utilizando análisis de sentimiento para determinar si el mensaje
-        tiene una vibra positiva o negativa, y ajusta la emoción actual en consecuencia.
-        Args:
-            mensaje (str): Mensaje del usuario a analizar.
-
-        Returns:
-            bool: Indica si hubo un cambio forzado de emoción.
-        """
         if not mensaje.strip():
             return False
 
-        puntaje = self.analizador.sentiment(mensaje)
+        resultado = self.analizador.predict(mensaje)
 
-        # Umbrales más suaves y configurables
-        if puntaje > 0.75:
+        if resultado.output == "POS":  # type: ignore
             return self._cambiar_por_valencia(min_valencia=0.6)
-        elif puntaje < 0.25:
+        elif resultado.output == "NEG":  # type: ignore
             return self._cambiar_por_valencia(max_valencia=-0.5)
 
         return False
@@ -66,10 +55,6 @@ class MotorEmocional(CargadorDatos):
 
         if candidatos:
             self.emocion_actual = random.choice(candidatos)
-
-            print(
-                f"Cambiando emoción a {self.obtener_estado_actual()['nombre']} por valencia."
-            )
             return True
         return False
 
