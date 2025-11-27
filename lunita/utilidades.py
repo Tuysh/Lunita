@@ -1,5 +1,6 @@
 import json
 from importlib.resources import files
+from functools import lru_cache
 
 
 class CargadorDatos:
@@ -25,6 +26,7 @@ class CargadorDatos:
         """
         self.ruta = ruta
 
+    @lru_cache(maxsize=None)
     def cargar_datos(self) -> dict:
         """Lee y decodifica el archivo JSON.
 
