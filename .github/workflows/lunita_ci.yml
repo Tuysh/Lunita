@@ -1,0 +1,36 @@
+name: Lunita CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    calidad-y-pruebas:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                python-version: [3.10, 3.11, 3.12]
+
+        steps:
+            - name: Checkout del repositorio
+              uses: actions/checkout@v4
+
+            - name: Configurar Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v5
+              with:
+                  python-version: ${{ matrix.python-version }}
+                  cache: "pip"
+            - name: Instalar dependencias
+              run: |
+                  python -m pip install --upgrade pip
+                  # Instalamos tus librerías (pydantic-ai, pysentimiento, etc.)
+                  pip install -r requirements.txt
+                  # Instalamos herramientas de desarrollo (testing y linting)
+                  pip install pytest ruff
+            - name: Revisar estilo con Ruff
+              run: |
+                # Esto fallará si el código está mal formateado
+                ruff check .
