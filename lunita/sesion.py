@@ -1,10 +1,9 @@
-import random
 from datetime import datetime
 from typing import Optional, TypedDict
 
 from .cliente import Cliente
 from .configuracion import ConfigurarEstrellas
-from .emocional import MotorEmocional
+from .emocional.motor import MotorEmocional
 from .memoria import MemoriaDia
 
 
@@ -40,7 +39,7 @@ class Sesion:
         elif self.configuracion.configuracion_vidente.vidente == "estrella":
             self._recuerdo = MemoriaDia("data/recuerdos_estrella.json")
 
-        self._emociones = MotorEmocional("data/emociones.json")
+        self._emociones = MotorEmocional()
 
         self._cliente = Cliente(
             emocion=self._recuerdo.obtener_para_prompt(),
@@ -59,14 +58,14 @@ class Sesion:
             Un diccionario que contiene la respuesta de la IA, el modelo utilizado y la fecha de la respuesta.
         """
 
-        cambio_forzado = self._emociones.analizar_vibra_usuario(pregunta)
+        resultado_motor = self._emociones.procesar_mensaje_usuario(pregunta)
+        instrucciones_emocion = "\n".join(resultado_motor["instrucciones_asistente"])
 
-        if not cambio_forzado and random.random() < 0.15:
-            self._emociones.obtener_nueva_emocion_al_azar()
+        nueva_instruccion = (
+            f"(Tu estado emocional es: {self._emociones.emocion_actual_asistente})\n"
+        )
 
-        nueva_instruccion = f"(Tu estado emocional cambio a: {self._emociones.obtener_estado_actual()['nombre']})\n"
-
-        prompt_emociones = f"{self._recuerdo.obtener_recuerdo_completo()}\nEMOCIONES ACTUALES (Ajusta tus respuestas a esta emociones a tus respuestas): {self._emociones.obtener_estado_actual_prompt()}"
+        prompt_emociones = f"{self._recuerdo.obtener_recuerdo_completo()}\nEMOCIONES ACTUALES (Ajusta tus respuestas a esta emociones a tus respuestas): {instrucciones_emocion}"
         self._cliente.actualizar_emocion(prompt_emociones)
 
         return {
@@ -82,8 +81,7 @@ class Sesion:
         Returns:
             La nueva emoción actual después del cambio.
         """
-        self._emociones.obtener_nueva_emocion_al_azar()
-        return str(self._emociones.obtener_estado_actual())
+        return self._emociones.cambiar_emocion_manual()
 
     @property
     def consultas(self):

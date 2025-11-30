@@ -77,3 +77,17 @@ class MotorEmocional:
             "emocion_usuario": self._analizador_emocional.emocion_actual_usuario,
             "instrucciones_asistente": self.instrucciones_actuales,
         }
+
+    def cambiar_emocion_manual(self) -> str:
+        """Fuerza un cambio de emoción al azar para el asistente.
+
+        Returns:
+            str: El nombre de la nueva emoción.
+        """
+        self.emocion_actual_asistente = (
+            self._administrador_emocional.obtener_nueva_emocion_al_azar()
+        )
+        self.instrucciones_actuales = (
+            self._administrador_emocional.instrucciones_actuales
+        )
+        return self.emocion_actual_asistente
