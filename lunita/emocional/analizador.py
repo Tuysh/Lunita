@@ -1,16 +1,8 @@
-from random import choice
-from typing import TypedDict
+from typing import Dict, List
 
 from pysentimiento import create_analyzer
 
 from ..utilidades import CargadorDatos
-
-
-class EstadoEmocional(TypedDict):
-    situacion: str
-    emociones: list[str]
-    valencia: float
-    intensidad: float
 
 
 class AnalizardorEmocional(CargadorDatos):
@@ -38,9 +30,9 @@ class AnalizardorEmocional(CargadorDatos):
             self._analizador_sentimental = create_analyzer(task="sentiment", lang="es")
             self._analizador_emocional = create_analyzer(task="emotion", lang="es")
 
-            self._emociones: list[EstadoEmocional] = self.cargar_datos()
-            self.emocion_actual: EstadoEmocional = choice(self._emociones)
-            self.instrucciones_actuales: str = ""
+            self._emociones: Dict[str, List[str]] = self.cargar_datos()
+            self.emocion_actual_usuario: str = "joy"
+            self.instrucciones_actuales: List[str] = []
 
         except Exception as e:
             raise RuntimeError(
@@ -73,12 +65,21 @@ class AnalizardorEmocional(CargadorDatos):
         return False
 
     def _analizar_emociones_usuario(self, mensaje: str):
+        """Analiza las emociones del usuario y ajusta la emoción actual.
+
+        En esta función se analiza el mensaje del usuario para detectar emociones específicas
+        (como alegría, tristeza, miedo, etc.) y se ajusta la emoción actual del asistente en
+        consecuencia. Se le añade una cadena de instrucciones basada en las emociones detectadas.
+
+        Args:
+            mensaje (str): El mensaje del usuario a analizar.
+        Returns:
+            str: La emoción detectada en el mensaje del usuario.
+        """
         resultado = self._analizador_emocional.predict(mensaje)
 
-        self.emocion_actual = resultado.output  # type: ignore
-        self.instrucciones_actuales = ", ".join(self._emociones[self.emocion_actual])  # type: ignore
-
-        return resultado.output  # type: ignore
+        self.emocion_actual_usuario: str = resultado.output  # type: ignore
+        self.instrucciones_actuales = self._emociones[self.emocion_actual_usuario]
 
     def obtener_estado_actual_prompt(self) -> str:
         """Obtiene una representación en cadena del estado emocional actual.
@@ -89,26 +90,4 @@ class AnalizardorEmocional(CargadorDatos):
         Returns:
             str: La cadena de texto que representa el estado emocional actual.
         """
-        estado = self.emocion_actual
-        emociones_str = ", ".join(estado["emociones"])
-        return f"Emociones actuales: {emociones_str}"
-
-    def obtener_nueva_emocion_al_azar(self) -> EstadoEmocional:
-        """Selecciona y devuelve una nueva emoción aleatoria.
-
-        Selecciona una nueva emoción al azar que sea diferente a la actual con hasta 10 intentos.
-        Si no se encuentra una emoción diferente, se mantiene la actual.
-
-        Returns:
-            str: La cadena de texto de la nueva emoción seleccionada.
-        """
-
-        nueva_emocion = choice(self._emociones)
-        intentos = 0
-
-        while nueva_emocion == self.emocion_actual and intentos < 10:
-            nueva_emocion = choice(self._emociones)
-            intentos += 1
-
-        self.emocion_actual = nueva_emocion
-        return nueva_emocion
+        return f"(Sigue las siguientes instrucciones: {self.instrucciones_actuales})"
