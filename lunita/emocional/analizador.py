@@ -77,9 +77,13 @@ class AnalizardorEmocional(CargadorDatos):
             str: La emoción detectada en el mensaje del usuario.
         """
         resultado = self._analizador_emocional.predict(mensaje)
+        emocion_detectada = resultado.output  # type: ignore
 
-        self.emocion_actual_usuario: str = resultado.output  # type: ignore
-        self.instrucciones_actuales = self._emociones[self.emocion_actual_usuario]
+        if emocion_detectada in self._emociones:
+            self.emocion_actual_usuario: str = resultado.output  # type: ignore
+            self.instrucciones_actuales = self._emociones[self.emocion_actual_usuario]
+        else:
+            pass
 
     def obtener_estado_actual_prompt(self) -> str:
         """Obtiene una representación en cadena del estado emocional actual.

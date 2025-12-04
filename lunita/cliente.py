@@ -5,7 +5,12 @@ from pydantic_ai import Agent
 from pydantic_ai.messages import ModelMessage
 
 from .configuracion import ConfigurarEstrellas
-from .constantes import AJUSTES_CONTEXTO, PROMPT_ESTRELLA, PROMPT_LUNITA
+from .constantes import (
+    AJUSTES_CONTEXTO,
+    PROMPT_ESTRELLA,
+    PROMPT_LUNITA,
+    DISPARADORES_VERBOSIDAD,
+)
 from .herramientas import HERRAMIENTAS
 
 AdaptadorMensajes = TypeAdapter(list[ModelMessage])
@@ -39,7 +44,24 @@ class Cliente:
         prompt += f"\n{self.emocion} Adapta todas tus respuestas a este estado emocional de manera sutil pero perceptible."
         return prompt
 
+    def _calcular_factor_verbosidad(self, mensaje: str) -> str:
+        palabras_usuario = len(mensaje.split())
+        quiere_verbosidad = any(
+            disparador in mensaje.lower() for disparador in DISPARADORES_VERBOSIDAD
+        )
+
+        if palabras_usuario < 6 and not quiere_verbosidad:
+            return "LENGTH: Be extremely brief. One or two sentences max. Get straight to the point"
+        elif 6 <= palabras_usuario <= 18 and not quiere_verbosidad:
+            return "LENGTH: Medium-length response. A small paragraph is enough"
+        else:
+            return "LENGTH: You may elaborate and ramble a bit, but without writing a whole novel"
+
     async def preguntar(self, mensaje: str) -> str:
+        largo_verbosidad = self._calcular_factor_verbosidad(mensaje)
+
+        mensaje_con_contexto = f"{mensaje} \n ({largo_verbosidad})"
+
         if self.configuracion.historial:
             historial_limitado = (
                 self.historial[-AJUSTES_CONTEXTO["max_historial"] :]
@@ -47,10 +69,12 @@ class Cliente:
                 else self.historial
             )
 
-            r = await self._agente.run(mensaje, message_history=historial_limitado)
+            r = await self._agente.run(
+                mensaje_con_contexto, message_history=historial_limitado
+            )
             self.historial.extend(r.new_messages())
         else:
-            r = await self._agente.run(mensaje)
+            r = await self._agente.run(mensaje_con_contexto)
 
         return r.output
 
